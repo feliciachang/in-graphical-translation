@@ -5,6 +5,7 @@ let input, button, text;
 let len;
 let canvasWidth = 2000;
 let canvasHeight = 200;
+let canvasTop = 10;
 let step;
 let sascha;
 let vec = false;
@@ -21,9 +22,10 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  image_input = createFileInput(processImage);
   input = createInput("");
   button = createButton("submit");
-  button.mousePressed(draw);
+  button.mousePressed(turnText);
   toggle = createButton("To Vector");
   toggle.mousePressed(toVector);
   back = createButton("Add Background");
@@ -33,6 +35,25 @@ function setup() {
   fill("purple");
 
   angleMode(DEGREES);
+}
+
+async function processImage(file) {
+  console.log(file);
+  let data = {
+    test: "my test",
+    image: file.data,
+  };
+  console.log(data);
+  let response = await fetch("http://127.0.0.1:5000/create-image", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  imgurl = await response.text();
+  console.log(imgurl);
+  longLine = loadImage(imgurl);
 }
 
 function createGrid(len) {
@@ -534,22 +555,22 @@ function turnText() {
   createWord(text);
 }
 
-function draw() {
-  canvasTop = mouseX / 2;
-  canvasHeight = mouseY / 2;
+// function draw() {
+//   canvasTop = mouseX / 2;
+//   canvasHeight = mouseY / 2;
 
-  if (mouseY < 1000) {
-    longLine = fly;
-  } else if (mouseY > 1000 && mouseY < 2000) {
-    longLine = gah;
-  } else {
-    longLine = pilar;
-  }
-  console.log(backphoto);
-  if (backphoto) {
-    for (let i = 0; i < canvasWidth; i = i + 500) {
-      image(sascha, i, 0, 700, 700);
-    }
-  }
-  turnText();
-}
+//   if (mouseY < 1000) {
+//     longLine = fly;
+//   } else if (mouseY > 1000 && mouseY < 2000) {
+//     longLine = gah;
+//   } else {
+//     longLine = pilar;
+//   }
+//   console.log(backphoto);
+//   if (backphoto) {
+//     for (let i = 0; i < canvasWidth; i = i + 500) {
+//       image(sascha, i, 0, 700, 700);
+//     }
+//   }
+//   turnText();
+// }
