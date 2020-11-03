@@ -1,40 +1,55 @@
+// import createWord from "./createWord.js";
 let longLine;
-let shortLine;
-let circ;
 let input, button, text;
 let len;
-let canvasWidth = 2000;
-let canvasHeight = 200;
-let canvasTop = 10;
+let canvasWidth;
+let canvasHeight;
+let width;
 let step;
-let sascha;
-let vec = false;
-let backphoto = false;
+let backgroundImage;
+let canvasTop = 10;
+let backphoto;
+let positionWithMouse;
 
 function preload() {
-  sascha = loadImage("static/images/cropped/flybackground.jpg");
-  fly = loadImage("static/images/cropped/fly.jpg");
-  pilar = loadImage("static/images/cropped/pilar.jpg");
-  gah = loadImage("static/images/cropped/gah.png");
-  shortLine = loadImage("static/images/cropped/line2.png");
-  circ = loadImage("static/images/cropped/circle.png");
+  backgroundImage = loadImage("static/images/cropped/flybackground.jpg");
+  longLine = loadImage("static/images/cropped/cropped.jpg");
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  const canvas = createCanvas(windowWidth - 500, windowHeight);
+  background(255);
+  canvas.parent("sketch-holder");
   image_input = createFileInput(processImage);
+  image_input.parent("add-file");
   input = createInput("");
+  input.parent("text-input");
+  textHeight = createInput("100");
+  textHeight.parent("text-height");
+  tWidth = createInput("100");
+  tWidth.parent("text-width");
+  imageSize = createInput("10");
+  imageSize.parent("image-size");
   button = createButton("submit");
   button.mousePressed(turnText);
-  toggle = createButton("To Vector");
-  toggle.mousePressed(toVector);
+  button.parent("text-input");
   back = createButton("Add Background");
   back.mousePressed(addBackground);
+  back.parent("add-background");
+  reduceSize = createButton("Reduce Size");
+  reduceSize.mousePressed(reduceWordSize);
+  reduceSize.parent("reduce-size");
+
   background("white");
   stroke("purple");
   fill("purple");
 
   angleMode(DEGREES);
+
+  canvasWidth = windowWidth - 500;
+  canvasHeight = 200;
+  width = 10;
+  backphoto = false;
 }
 
 async function processImage(file) {
@@ -74,462 +89,15 @@ function createGrid(len) {
   }
 }
 
-function topH(x, width, height) {
-  push();
-  for (let i = x; i < x + 200; i = i + height) {
-    push();
-    translate(i, canvasTop);
-    rotate(-90);
-    translate(-i, -canvasTop);
-    image(
-      longLine,
-      i,
-      canvasTop,
-      width,
-      (longLine.height * width) / longLine.width
-    );
-    pop();
-  }
-  pop();
-}
-function halfMiddleH(x, width, height) {
-  push();
-  for (let i = Math.floor(x + 200 / 2); i < x + 200; i = i + height) {
-    push();
-    translate(i, 200);
-    rotate(-90);
-    translate(-i, -200);
-    image(longLine, i, 200, width, (longLine.height * width) / longLine.width);
-    pop();
-  }
-  pop();
-}
-
-function middleH(x, width, height) {
-  push();
-  for (let i = x; i < x + 200; i = i + height) {
-    push();
-    translate(i, canvasHeight / 2);
-    rotate(-90);
-    translate(-i, -canvasHeight / 2);
-    image(
-      longLine,
-      i,
-      canvasHeight / 2,
-      width,
-      (longLine.height * width) / longLine.width
-    );
-    pop();
-  }
-  pop();
-}
-
-function bottomH(x, width, height) {
-  push();
-  for (let i = x; i < x + 200; i = i + height) {
-    push();
-    translate(i, canvasHeight);
-    rotate(-90);
-    translate(-i, -canvasHeight);
-    image(
-      longLine,
-      i,
-      canvasHeight,
-      width,
-      (longLine.height * width) / longLine.width
-    );
-    pop();
-  }
-  pop();
-}
-
-function left(x, width, height, start, end) {
-  for (let i = start; i < end; i = i + height) {
-    image(longLine, x, i, width, (longLine.height * width) / longLine.width);
-  }
-}
-
-function middle(x, width, height, start, end) {
-  for (let i = start; i < end; i = i + height) {
-    image(
-      longLine,
-      x + 100,
-      i,
-      width + 20,
-      (longLine.height * (width + 20)) / longLine.width
-    );
-  }
-}
-
-function diagonal(x, width, height, leftToRight, start, end) {
-  if (leftToRight) {
-    for (let i = start; i < end; i = i + width) {
-      image(longLine, x, i, width, (longLine.height * width) / longLine.width);
-      x += width;
-    }
-  } else {
-    for (let i = start; i < end; i = i + width) {
-      image(
-        longLine,
-        x + 200,
-        i,
-        width,
-        (longLine.height * width) / longLine.width
-      );
-      x -= width;
-    }
-  }
-}
-
-function right(x, width, height, start, end) {
-  for (let i = start; i < end; i = i + height) {
-    image(
-      longLine,
-      x + 200,
-      i,
-      width,
-      (longLine.height * width) / longLine.width
-    );
-  }
-}
-
-function createWord(text) {
-  let width = 10;
-  let height = (longLine.height * width) / longLine.width;
-  //let height = mouseY / 10;
-  for (let i = 0; i < text.length; i++) {
-    let x = 300 * i + mouseX / 10;
-    switch (text[i]) {
-      case "A":
-        left(x, width, height, canvasTop, canvasHeight);
-        right(x, width, height, canvasTop, canvasHeight);
-        topH(x, width, height);
-        middleH(x, width, height);
-        break;
-      case "B":
-        left(x, width, height, canvasTop, canvasHeight);
-        right(x, width, height, canvasTop, canvasHeight);
-        topH(x, width, height);
-        middleH(x, width, height);
-        bottomH(x, width, height);
-        break;
-      case "C":
-        left(x, width, height, canvasTop, canvasHeight);
-        topH(x, width, height, canvasTop, canvasHeight);
-        bottomH(x, width, height);
-        break;
-      case "D":
-        left(x, width, height, canvasTop, canvasHeight);
-        right(x, width, height, canvasTop, canvasHeight);
-        topH(x, width, height);
-        bottomH(x, width, height);
-        break;
-      case "E":
-        left(x, width, height, canvasTop, canvasHeight);
-        topH(x, width, height);
-        middleH(x, width, height);
-        bottomH(x, width, height);
-        break;
-      case "F":
-        left(x, width, height, canvasTop, canvasHeight);
-        topH(x, width, height);
-        middleH(x, width, height);
-        break;
-      case "G":
-        left(x, width, height, canvasTop, canvasHeight);
-        topH(x, width, height);
-        bottomH(x, width, height);
-        halfMiddleH(x, width, height);
-        right(x, width, height, canvasHeight / 2, canvasHeight);
-        break;
-      case "H":
-        left(x, width, height, canvasTop, canvasHeight);
-        right(x, width, height, canvasTop, canvasHeight);
-        middleH(x, width, height);
-        break;
-      case "I":
-        middle(x, width, height, canvasTop, canvasHeight);
-        topH(x, width, height);
-        bottomH(x, width, height);
-        break;
-      case "J":
-        topH(x, width, height);
-        right(x, width, height, canvasTop, canvasHeight);
-        bottomH(x, width, height);
-        left(x, width, height, canvasHeight / 2, canvasHeight);
-        break;
-      case "K":
-        left(x, width, height, canvasTop, canvasHeight);
-        diagonal(x, width, height, true, canvasHeight / 2, canvasHeight);
-        diagonal(x, width, height, false, canvasTop, canvasHeight / 2);
-        break;
-      case "L":
-        left(x, width, height, canvasTop, canvasHeight);
-        bottomH(x, width, height);
-        break;
-      case "M":
-        left(x, width, height, canvasTop, canvasHeight);
-        middle(x, width, height, canvasTop, canvasHeight);
-        right(x, width, height, canvasTop, canvasHeight);
-        topH(x, width, height);
-        break;
-      case "N":
-        left(x, width, height, canvasTop, canvasHeight);
-        diagonal(x, width, height, true, canvasTop, canvasHeight);
-        right(x, width, height, canvasTop, canvasHeight);
-        break;
-      case "O":
-        left(x, width, height, canvasTop, canvasHeight);
-        right(x, width, height, canvasTop, canvasHeight);
-        topH(x, width, height);
-        bottomH(x, width, height);
-        diagonal(x, width, height, false, canvasTop, canvasHeight);
-        break;
-      case "P":
-        left(x, width, height, canvasTop, canvasHeight);
-        topH(x, width, height);
-        right(x, width, height, canvasTop, canvasHeight / 2);
-        middleH(x, width, height);
-        break;
-      case "Q":
-        break;
-      case "R":
-        left(x, width, height, canvasTop, canvasHeight);
-        topH(x, width, height);
-        middleH(x, width, height);
-        right(x, width, height, canvasTop, canvasHeight / 2);
-        diagonal(x, width, height, true, canvasHeight / 2, canvasHeight);
-        break;
-      case "S":
-        left(x, width, height, canvasTop, canvasHeight / 2);
-        topH(x, width, height);
-        middleH(x, width, height);
-        bottomH(x, width, height);
-        right(x, width, height, canvasHeight / 2, canvasHeight);
-        break;
-      case "T":
-        topH(x, width, height);
-        middle(x, width, height, canvasTop, canvasHeight);
-        break;
-      case "U":
-        left(x, width, height, canvasTop, canvasHeight);
-        bottomH(x, width, height);
-        right(x, width, height, canvasTop, canvasHeight);
-        break;
-      case "V":
-        diagonal(x, width, height, true, canvasTop, canvasHeight);
-        diagonal(x, width, height, false, canvasTop, canvasHeight);
-        break;
-      case "W":
-        left(x, width, height, canvasTop, canvasHeight);
-        middle(x, width, height, canvasTop, canvasHeight);
-        right(x, width, height, canvasTop, canvasHeight);
-        bottomH(x, width, height);
-        break;
-      case "X":
-        diagonal(x, width, height, true, canvasTop, canvasHeight);
-        diagonal(x, width, height, false, canvasTop, canvasHeight);
-        break;
-      case "Y":
-        diagonal(x, width, height, true);
-        diagonal(x, width, height, false);
-        middle(x, width, height, canvasHeight / 2, canvasHeight);
-        break;
-      case "Z":
-        topH(x, width, height);
-        diagonal(x, width, false, canvasTop, canvasHeight);
-        bottomH(x, width, height);
-        break;
-    }
-  }
-}
-
 function getHeight(width) {
   return (longLine.height * width) / longLine.width;
-}
-
-function topHT(x, y) {
-  rect(x, y, 160, 90);
-}
-function bottomHT(x, y) {
-  rect(x, y, 160, 90);
-}
-function leftT(x, y) {
-  rect(x, y, 30, 240);
-}
-function leftHalfT(x, y) {
-  rect(x, y, 30, 140);
-}
-function rightT(x, y) {
-  rect(x, y, 20, 244);
-}
-function rightHalfT(x, y) {
-  rect(x, y, 20, 140);
-}
-function middleHT(x, y) {
-  rect(x, y, 160, 18);
-}
-
-function createThickWord(text) {
-  let topwidth = 90;
-  let bottomwidth = 90;
-  let rightwidth = 18;
-  let middlewidth = 18;
-  let leftwidth = 30;
-
-  let topheight = 160;
-  let sideheight = 244;
-  //let height = mouseY / 10;
-  for (let i = 0; i < text.length; i++) {
-    let x = 200 * i + 5;
-    switch (text[i]) {
-      case "A":
-        leftHalfT(x, 100);
-        rightHalfT(x + 140, 100);
-        topHT(x, 0);
-        middleHT(x, 100);
-        break;
-      case "B":
-        leftT(x, 0);
-        topHT(x, 30);
-        bottomHT(x, 150);
-        break;
-      case "C":
-        left(x, leftwidth, topheight, 5, canvasHeight);
-        topH(x, width, heisideheightght, 5, canvasHeight);
-        bottomH(x, bottomwidth, sideheight);
-        break;
-      case "D":
-        left(x, leftwidth, topheight, 5, canvasHeight);
-        right(x, rightwidth, topheight, 5, canvasHeight);
-        topH(x, width, sideheight);
-        bottomH(x, bottomwidth, sideheight);
-        break;
-      case "E":
-        left(x, leftwidth, topheight, 5, canvasHeight);
-        topH(x, width, sideheight);
-        middleH(x, middlewidth, sideheight);
-        bottomH(x, width, sideheight);
-        break;
-      case "F":
-        left(x, leftwidth, topheight, 5, canvasHeight);
-        topH(x, width, sideheight);
-        middleH(x, middlewidth, sideheight);
-        break;
-      case "G":
-        left(x, leftwidth, topheight, 5, canvasHeight);
-        topH(x, width, sideheight);
-        bottomH(x, width, sideheight);
-        halfMiddleH(x, middlewidth, sideheight);
-        right(x, width, topheight, canvasHeight / 2, canvasHeight);
-        break;
-      case "H":
-        left(x, width, height, 5, canvasHeight);
-        right(x, width, height, 5, canvasHeight);
-        middleH(x, width, height);
-        break;
-      case "I":
-        middle(x, width, height, 5, canvasHeight);
-        topH(x, width, height);
-        bottomH(x, width, height);
-        break;
-      case "J":
-        topH(x, width, height);
-        right(x, width, height, 5, canvasHeight);
-        bottomH(x, width, height);
-        left(x, width, height, canvasHeight / 2, canvasHeight);
-        break;
-      case "K":
-        left(x, width, height, 5, canvasHeight);
-        diagonal(x, width, height, true, canvasHeight / 2, canvasHeight);
-        diagonal(x, width, height, false, 5, canvasHeight / 2);
-        break;
-      case "L":
-        left(x, width, height, 5, canvasHeight);
-        bottomH(x, width, height);
-        break;
-      case "M":
-        left(x, width, height, 5, canvasHeight);
-        middle(x, width, height, 5, canvasHeight);
-        right(x, width, height, 5, canvasHeight);
-        topH(x, width, height);
-        break;
-      case "N":
-        left(x, width, height, 5, canvasHeight);
-        diagonal(x, width, height, true, 5, canvasHeight);
-        right(x, width, height, 5, canvasHeight);
-        break;
-      case "O":
-        left(x, width, height, 5, canvasHeight);
-        right(x, width, height, 5, canvasHeight);
-        topH(x, width, height);
-        bottomH(x, width, height);
-        diagonal(x, width, height, false, 5, canvasHeight);
-        break;
-      case "P":
-        left(x, width, height, 5, canvasHeight);
-        topH(x, width, height);
-        right(x, width, height, 5, canvasHeight / 2);
-        middleH(x, width, height);
-        break;
-      case "Q":
-        break;
-      case "R":
-        left(x, width, height, 5, canvasHeight);
-        topH(x, width, height);
-        middleH(x, width, height);
-        right(x, width, height, 5, canvasHeight / 2);
-        diagonal(x, width, height, true, canvasHeight / 2, canvasHeight);
-        break;
-      case "S":
-        left(x, width, height, 5, canvasHeight / 2);
-        topH(x, width, height);
-        middleH(x, width, height);
-        bottomH(x, width, height);
-        right(x, width, height, canvasHeight / 2, canvasHeight);
-        break;
-      case "T":
-        topH(x, width, height);
-        middle(x, width, height, 5, canvasHeight);
-        break;
-      case "U":
-        left(x, width, height, 5, canvasHeight);
-        bottomH(x, width, height);
-        right(x, width, height, 5, canvasHeight);
-        break;
-      case "V":
-        diagonal(x, width, height, true, 5, canvasHeight);
-        diagonal(x, width, height, false, 5, canvasHeight);
-        break;
-      case "W":
-        left(x, width, height, 5, canvasHeight);
-        middle(x, width, height, 5, canvasHeight);
-        right(x, width, height, 5, canvasHeight);
-        bottomH(x, width, height);
-        break;
-      case "X":
-        diagonal(x, width, height, true, 5, canvasHeight);
-        diagonal(x, width, height, false, 5, canvasHeight);
-        break;
-      case "Y":
-        diagonal(x, width, height, true);
-        diagonal(x, width, height, false);
-        middle(x, width, height, canvasHeight / 2, canvasHeight);
-        break;
-      case "Z":
-        topH(x, width, height);
-        diagonal(x, width, false, 5, canvasHeight);
-        bottomH(x, width, height);
-        break;
-    }
-  }
 }
 
 function addBackground() {
   if (backphoto === false || backphoto === undefined) {
     backphoto = true;
     for (let i = 0; i < canvasWidth; i = i + 500) {
-      image(sascha, i, 0, 700, 700);
+      image(backgroundImage, i, 0, 700, 700);
     }
     turnText();
   } else {
@@ -545,32 +113,44 @@ function toVector() {
 
 function turnText() {
   //if (backphoto !== true) {
-  background(255, 10);
+  background(255);
   //}
   text = input.value();
   text = text.toUpperCase();
   len = text.length;
 
+  let wordHeight = parseInt(textHeight.value());
+  console.log(tWidth.value());
+  let wordWidth = parseInt(tWidth.value());
+
   createGrid(len);
-  createWord(text);
+  createWord(text, width, len, wordHeight, wordWidth);
 }
 
-// function draw() {
-//   canvasTop = mouseX / 2;
-//   canvasHeight = mouseY / 2;
+function reduceWordSize() {
+  background(255);
+  text = input.value();
+  text = text.toUpperCase();
+  len = text.length;
+  let wordHeight = parseInt(textHeight.value());
+  console.log(tWidth.value());
+  let wordWidth = parseInt(tWidth.value());
+  createWord(text, width, len, wordHeight, wordWidth);
+}
 
-//   if (mouseY < 1000) {
-//     longLine = fly;
-//   } else if (mouseY > 1000 && mouseY < 2000) {
-//     longLine = gah;
-//   } else {
-//     longLine = pilar;
-//   }
-//   console.log(backphoto);
-//   if (backphoto) {
-//     for (let i = 0; i < canvasWidth; i = i + 500) {
-//       image(sascha, i, 0, 700, 700);
-//     }
-//   }
-//   turnText();
-// }
+function draw() {
+  background(255);
+  //}
+  text = input.value();
+  text = text.toUpperCase();
+  len = text.length;
+
+  let wordHeight = parseInt(textHeight.value());
+  console.log(tWidth.value());
+  let wordWidth = parseInt(tWidth.value());
+
+  width = parseInt(imageSize.value());
+
+  createGrid(len);
+  createWord(text, width, len, wordHeight, wordWidth);
+}
