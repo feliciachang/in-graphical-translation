@@ -97,8 +97,6 @@ termcolor==1.1.0
 terminado==0.9.1
 testpath==0.4.4
 toml==0.10.1
-torch==1.7.0
-torchvision==0.8.1
 tornado==6.0.4
 traitlets==5.0.4
 typing-extensions==3.7.4.3
@@ -109,3 +107,5 @@ Werkzeug==1.0.1
 widgetsnbextension==3.5.1
 wrapt==1.12.1
 zipp==3.3.0
+https://download.pytorch.org/whl/cpu/torch-1.0.1.post2-cp36-cp36m-linux_x86_64.whl
+torchvision
