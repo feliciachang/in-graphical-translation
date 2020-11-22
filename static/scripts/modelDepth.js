@@ -481,6 +481,7 @@ function checkImg() {
         let imageText = document.getElementById(`${i}`).value;
         let res = fetch("/create-obj-file", {
           method: "POST",
+          keepalive: true,
           headers: {
             "Content-Type": "application/json",
           },
