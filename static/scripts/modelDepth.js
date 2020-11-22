@@ -321,6 +321,7 @@ async function main(num_of_files) {
     console.log(url);
     const response = await fetch(url);
     const text = await response.text();
+    console.log("text", text);
     const data = parseOBJ(text);
     const outerElem = createElem("div", contentElem, "item");
     const viewElem = createElem("div", outerElem, "view");
