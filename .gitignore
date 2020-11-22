@@ -1,3 +1,9 @@
 opencv-test
 __pycache__
 .ipynb_checkpoints
+*.pyc
+*_disp.jpg
+*_disp.npy
+*.npz
+kitti_data
+models

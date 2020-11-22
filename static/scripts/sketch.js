@@ -10,10 +10,12 @@ let backgroundImage;
 let canvasTop = 10;
 let backphoto;
 let positionWithMouse;
+let circShape;
+let useCircle;
 
 function preload() {
-  backgroundImage = loadImage("static/images/cropped/flybackground.jpg");
   longLine = loadImage("static/images/cropped/cropped.jpg");
+  circShape = loadImage("static/images/cropped/cropped.jpg");
 }
 
 function setup() {
@@ -33,6 +35,9 @@ function setup() {
   button = createButton("submit");
   button.mousePressed(turnText);
   button.parent("text-input");
+  circleButton = createButton("use circles");
+  circleButton.mousePressed(setCircleTru);
+  circleButton.parent("use-circle");
   back = createButton("Add Background");
   back.mousePressed(addBackground);
   back.parent("add-background");
@@ -52,13 +57,20 @@ function setup() {
   backphoto = false;
 }
 
+function setCircleTru() {
+  if (useCircle) {
+    useCircle = false;
+  } else {
+    useCircle = true;
+  }
+}
+
 async function processImage(file) {
-  console.log(file);
   let data = {
     test: "my test",
     image: file.data,
   };
-  console.log(data);
+  backgroundImage = file.data;
   let response = await fetch("http://127.0.0.1:5000/create-image", {
     method: "POST",
     headers: {
@@ -67,14 +79,28 @@ async function processImage(file) {
     body: JSON.stringify(data),
   });
   imgurl = await response.text();
-  console.log(imgurl);
+
+  circPost = await fetch("http://127.0.0.1:5000/create-circles", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  circPost = await circPost.text();
+  console.log(circPost);
+
   longLine = loadImage(imgurl);
+  if (circPost !== undefined) {
+    circShape = loadImage(circPost);
+  }
+
+  backgroundImage = loadImage(file.data);
 }
 
 function createGrid(len) {
   let gridWidth = Math.floor(canvasWidth / len);
   step = Math.floor(gridWidth / 4);
-  console.log(step);
   let stepper = 5;
   print(gridWidth, step, stepper);
   for (let count = 0; count < len; count++) {
@@ -96,13 +122,8 @@ function getHeight(width) {
 function addBackground() {
   if (backphoto === false || backphoto === undefined) {
     backphoto = true;
-    for (let i = 0; i < canvasWidth; i = i + 500) {
-      image(backgroundImage, i, 0, 700, 700);
-    }
-    turnText();
   } else {
     backphoto = false;
-    turnText();
   }
 }
 
@@ -114,13 +135,13 @@ function toVector() {
 function turnText() {
   //if (backphoto !== true) {
   background(255);
+
   //}
   text = input.value();
   text = text.toUpperCase();
   len = text.length;
 
   let wordHeight = parseInt(textHeight.value());
-  console.log(tWidth.value());
   let wordWidth = parseInt(tWidth.value());
 
   createGrid(len);
@@ -133,24 +154,39 @@ function reduceWordSize() {
   text = text.toUpperCase();
   len = text.length;
   let wordHeight = parseInt(textHeight.value());
-  console.log(tWidth.value());
   let wordWidth = parseInt(tWidth.value());
   createWord(text, width, len, wordHeight, wordWidth);
 }
 
 function draw() {
   background(255);
+  push();
+  if (backphoto) {
+    image(
+      backgroundImage,
+      0,
+      0,
+      canvasWidth,
+      backgroundImage.height * (canvasWidth / backgroundImage.width)
+    );
+  }
+  pop();
   //}
   text = input.value();
   text = text.toUpperCase();
   len = text.length;
 
   let wordHeight = parseInt(textHeight.value());
-  console.log(tWidth.value());
   let wordWidth = parseInt(tWidth.value());
 
   width = parseInt(imageSize.value());
 
-  createGrid(len);
-  createWord(text, width, len, wordHeight, wordWidth);
+  //createGrid(len);
+
+  if (useCircle) {
+    image(circShape, 0, 0);
+    createWord(text, width, len, wordHeight, wordWidth, false);
+  } else {
+    createWord(text, width, len, wordHeight, wordWidth, true);
+  }
 }

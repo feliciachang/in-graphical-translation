@@ -1,0 +1,8 @@
+jupyter
+numpy
+pandas
+opencv-python
+torch 
+torchvision
+tensorboardX
+matplotlib
