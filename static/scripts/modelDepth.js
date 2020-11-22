@@ -241,9 +241,7 @@ async function main(num_of_files) {
   // compiles and links the shaders, looks up attribute and uniform locations
   const meshProgramInfo = webglUtils.createProgramInfo(gl, [vs, fs]);
 
-  const imageTexture = loadImageTexture(
-    "http://127.0.0.1:5000/static/images/obj/test.png"
-  );
+  const imageTexture = loadImageTexture("/static/images/obj/test.png");
 
   //mouse events
   let amortization = 0.95;
@@ -319,7 +317,7 @@ async function main(num_of_files) {
   const items = [];
 
   for (let i = 0; i < num_of_files; i++) {
-    let url = "http://127.0.0.1:5000/static/images/obj/" + i + ".obj";
+    let url = "/static/images/obj/" + i + ".obj";
     console.log(url);
     const response = await fetch(url);
     const text = await response.text();
@@ -480,7 +478,7 @@ function checkImg() {
       let objPromises = [];
       for (let i = 0; i < allFileContents.length; i++) {
         let imageText = document.getElementById(`${i}`).value;
-        let res = fetch("http://127.0.0.1:5000/create-obj-file", {
+        let res = fetch("/create-obj-file", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -512,7 +510,7 @@ function checkImg() {
       //       };
       //       console.log("here");
       //       let response = await fetch(
-      //         "http://127.0.0.1:5000/create-obj-file",
+      //         "/create-obj-file",
       //         {
       //           method: "POST",
       //           headers: {
@@ -538,7 +536,7 @@ function checkImg() {
       //       name: `${i}`,
       //     };
       //     console.log("here");
-      //     let response = await fetch("http://127.0.0.1:5000/create-obj-file", {
+      //     let response = await fetch("/create-obj-file", {
       //       method: "POST",
       //       headers: {
       //         "Content-Type": "application/json",

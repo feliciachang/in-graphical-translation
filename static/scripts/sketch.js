@@ -71,7 +71,7 @@ async function processImage(file) {
     image: file.data,
   };
   backgroundImage = file.data;
-  let response = await fetch("http://127.0.0.1:5000/create-image", {
+  let response = await fetch("/create-image", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -80,7 +80,7 @@ async function processImage(file) {
   });
   imgurl = await response.text();
 
-  circPost = await fetch("http://127.0.0.1:5000/create-circles", {
+  circPost = await fetch("/create-circles", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
