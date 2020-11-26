@@ -45,9 +45,9 @@ function parseOBJ(text) {
       if (i === 0) {
         webglVertexData[i].push(...objVertexData[i][index]);
         webglVertexData[3].push(...objVertexData[3][index]);
-      } else {
-        webglVertexData[i].push(...objVertexData[i][index]);
-      }
+      } //else {
+      //   webglVertexData[i].push(...objVertexData[i][index]);
+      // }
       // if this is the position index (index 0) and we parsed
       // vertex colors then copy the vertex colors to the webgl vertex color data
     });
@@ -101,10 +101,9 @@ function parseOBJ(text) {
     handler(parts, unparsedArgs);
   }
 
-  console.log(webglVertexData);
+  // console.log(webglVertexData);
   return {
     position: webglVertexData[0],
-    normal: webglVertexData[2],
     color: webglVertexData[3],
   };
 }
@@ -195,20 +194,20 @@ async function main(num_of_files) {
 
   const vs = `
     attribute vec4 a_position;
-    attribute vec3 a_normal;
+    
     attribute vec4 a_color;
   
     uniform mat4 u_projection;
     uniform mat4 u_view;
     uniform mat4 u_world;
-    varying vec3 v_normal;
+    
     varying vec4 v_color;
     uniform mat4 u_textureMatrix;
     varying vec4 v_projectedTexcoord;
     void main() {
       vec4 worldPosition = u_world * a_position;
       gl_Position = u_projection * u_view * worldPosition;
-      v_normal = mat3(u_world) * a_normal;
+      
       v_color = a_color;
       v_projectedTexcoord = u_textureMatrix * worldPosition;
     }
@@ -216,7 +215,7 @@ async function main(num_of_files) {
 
   const fs = `
     precision mediump float;
-    varying vec3 v_normal;
+    
     varying vec4 v_color;
     varying vec4 v_projectedTexcoord;
     uniform vec4 u_diffuse;
@@ -232,9 +231,7 @@ async function main(num_of_files) {
   
       vec4 projectedTexColor = texture2D(u_projectedTexture, projectedTexcoord.xy);
       float projectedAmount = inRange ? 1.0 : 0.0;
-      vec3 normal = normalize(v_normal);
-      float fakeLight = dot(u_lightDirection, normal) * .5 + .5;
-      vec4 diffuse = u_diffuse * v_color;
+      
       gl_FragColor = v_color;
     }
     `;
@@ -481,7 +478,7 @@ function checkImg() {
         let imageText = document.getElementById(`${i}`).value;
         let res = fetch("/create-obj-file", {
           method: "POST",
-          keepalive: true,
+          // keepalive: true,
           headers: {
             "Content-Type": "application/json",
           },

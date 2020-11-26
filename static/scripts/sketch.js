@@ -79,7 +79,10 @@ async function processImage(file) {
     body: JSON.stringify(data),
   });
   imgurl = await response.text();
+  console.log(imgurl);
+  longLine = loadImage(imgurl);
 
+  circPost = undefined;
   circPost = await fetch("/create-circles", {
     method: "POST",
     headers: {
@@ -90,7 +93,6 @@ async function processImage(file) {
   circPost = await circPost.text();
   console.log(circPost);
 
-  longLine = loadImage(imgurl);
   if (circPost !== undefined) {
     circShape = loadImage(circPost);
   }

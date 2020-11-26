@@ -320,21 +320,7 @@ function createWord(text, width, len, wordHeight, wordWidth, useCircle) {
         case "R":
           left(x, width, height, canvasTop + y, wordHeight + y);
           circ(x, width, height, canvasTop + y, letterWidth);
-          middleH(
-            x,
-            width,
-            height,
-            (wordHeight - canvasTop) / 2 + y,
-            letterWidth
-          );
-          right(
-            x,
-            width,
-            height,
-            canvasTop + y,
-            wordHeight / 2 + y,
-            letterWidth
-          );
+
           diagonal(
             x,
             width,
