@@ -322,8 +322,8 @@ async function main(num_of_files) {
     const data = parseOBJ(text);
     const outerElem = createElem("div", contentElem, "item");
     const viewElem = createElem("div", outerElem, "view");
-    const labelElem = createElem("div", outerElem, "label");
-    labelElem.textContent = `Item ${i + 1}`;
+    // const labelElem = createElem("div", outerElem, "label");
+    // labelElem.textContent = `Item ${i + 1}`;
     const bufferInfo = webglUtils.createBufferInfoFromArrays(gl, data);
     items.push({
       bufferInfo: bufferInfo,
@@ -345,7 +345,7 @@ async function main(num_of_files) {
 
   function render(time) {
     console.log("in render");
-    time *= 0.0001; // convert to seconds
+    time *= 0.001; // convert to seconds
 
     webglUtils.resizeCanvasToDisplaySize(gl.canvas);
     //gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);

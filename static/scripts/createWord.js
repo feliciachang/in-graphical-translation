@@ -299,21 +299,6 @@ function createWord(text, width, len, wordHeight, wordWidth, useCircle) {
         case "P":
           left(x, width, height, canvasTop + y, wordHeight + y);
           circ(x, width, height, canvasTop + y, letterWidth);
-          right(
-            x,
-            width,
-            height,
-            canvasTop + y,
-            wordHeight / 2 + y,
-            letterWidth
-          );
-          middleH(
-            x,
-            width,
-            height,
-            (wordHeight - canvasTop) / 2 + y,
-            letterWidth
-          );
           break;
         case "Q":
           break;

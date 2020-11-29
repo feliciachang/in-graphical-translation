@@ -81,8 +81,10 @@ def getCircles(img_uri):
     # pilImg = Image.open(
     # "static/images/original/fractal-vegetable.jpg", mode = "r")
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    print(img)
     cimg = img.copy()
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    print(img)
     img = cv2.medianBlur(img, 5)
     print("hi")
     circles = cv2.HoughCircles(image=img, method=cv2.HOUGH_GRADIENT, dp=0.9,
@@ -94,6 +96,7 @@ def getCircles(img_uri):
         y = i[1]
         r = int(i[2])
         # crop image as square
+        cimg = cimg[int(y-r):int(y+r), int(x-r):int(x+r)]
         img = img[int(y-r):int(y+r), int(x-r):int(x+r)]
         # create a mask
         mask = np.full((img.shape[0], img.shape[1]), 0, dtype=np.uint8)
