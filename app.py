@@ -16,6 +16,8 @@ from torchvision import transforms
 from monodepth.utils import download_model_if_doesnt_exist
 from monodepth import networks
 
+np.set_printoptions(threshold=sys.maxsize)
+
 app = Flask(__name__)
 
 
@@ -74,6 +76,20 @@ def cropTester():
     return "done"
 
 
+def cropCircles(img, r):
+    mask = np.full((len(img), len(img[0])), 0, dtype=np.uint8)
+    # create a circle mask,
+    cv2.circle(mask, (r, r), r, (255, 255, 255), -1)
+    # get only the inside pixels
+    fg = cv2.bitwise_or(img, img, mask=mask)
+
+    mask = cv2.bitwise_not(mask)
+    background = np.full(img.shape, 255, dtype=np.uint8)
+    bk = cv2.bitwise_or(background, background, mask=mask)
+    final = cv2.bitwise_or(fg, bk)
+    return final
+
+
 def getCircles(img_uri):
     img = data_uri_to_cv2_img(img_uri, "cv2")
     # img = cv2.imread("static/images/original/fractal-vegetable.jpg")
@@ -81,34 +97,72 @@ def getCircles(img_uri):
     # pilImg = Image.open(
     # "static/images/original/fractal-vegetable.jpg", mode = "r")
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    print(img)
+
     cimg = img.copy()
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    print(img)
+
     img = cv2.medianBlur(img, 5)
-    print("hi")
+
     circles = cv2.HoughCircles(image=img, method=cv2.HOUGH_GRADIENT, dp=0.9,
                                minDist=80, param1=110, param2=39, maxRadius=70)
-    print(circles)
 
     for co, i in enumerate(circles[0, :], start=1):
         x = i[0]
         y = i[1]
         r = int(i[2])
+        print(x, y, r)
+        img = img[int(y-r):int(y+r), int(x-r):int(x+r)]
+        # print("img", img)
+        # print("img", img.shape)
+        r_array = cropCircles(img, r)
         # crop image as square
         cimg = cimg[int(y-r):int(y+r), int(x-r):int(x+r)]
-        img = img[int(y-r):int(y+r), int(x-r):int(x+r)]
-        # create a mask
-        mask = np.full((img.shape[0], img.shape[1]), 0, dtype=np.uint8)
-        # create a circle mask,
-        cv2.circle(mask, (r, r), r, (255, 255, 255), -1)
-        # get only the inside pixels
-        fg = cv2.bitwise_or(img, img, mask=mask)
+        # sliced = [[rgb[0]] for rgb in cimg[0]]
+        R = []
+        for index, row in enumerate(cimg):
+            singlerow = []
+            for index, col in enumerate(row):
+                singlerow.append(col[0])
+            R.append(singlerow)
+        # print("R", R)
+        # print("R shape", len(R), len(R[0]))
+        r_array = cropCircles(np.array(R), r)
 
-        mask = cv2.bitwise_not(mask)
-        background = np.full(img.shape, 255, dtype=np.uint8)
-        bk = cv2.bitwise_or(background, background, mask=mask)
-        final = cv2.bitwise_or(fg, bk)
+        g = []
+        for index, row in enumerate(cimg):
+            singlerow = []
+            for index, col in enumerate(row):
+                singlerow.append(col[1])
+            g.append(singlerow)
+        g_array = cropCircles(np.array(g), r)
+
+        b = []
+        for index, row in enumerate(cimg):
+            singlerow = []
+            for index, col in enumerate(row):
+                singlerow.append(col[2])
+            b.append(singlerow)
+        b_array = cropCircles(np.array(b), r)
+
+        final = []
+        for rowindex, row in enumerate(b_array):
+            onerow = []
+            for colindex, col in enumerate(row):
+                onerow.append([r_array[rowindex][colindex], g_array[rowindex]
+                               [colindex], b_array[rowindex][colindex]])
+            final.append(onerow)
+
+        # # create a mask
+        # mask = np.full((img.shape[0], img.shape[1]), 0, dtype=np.uint8)
+        # # create a circle mask,
+        # cv2.circle(mask, (r, r), r, (255, 255, 255), -1)
+        # # get only the inside pixels
+        # fg = cv2.bitwise_or(img, img, mask=mask)
+
+        # mask = cv2.bitwise_not(mask)
+        # background = np.full(img.shape, 255, dtype=np.uint8)
+        # bk = cv2.bitwise_or(background, background, mask=mask)
+        # final = cv2.bitwise_or(fg, bk)
         npImage = np.array(final)
         Image.fromarray(npImage).save("static/images/cropped/circle.png")
         return "static/images/cropped/circle.png"
@@ -185,8 +239,7 @@ def getImage(img_uri, template):
         else:
             top_left = max_loc
         bottom_right = (top_left[0] + w, top_left[1] + h)
-        futureimg = originalImg[top_left[1]
-            : bottom_right[1], top_left[0]: bottom_right[0]]
+        futureimg = originalImg[top_left[1]: bottom_right[1], top_left[0]: bottom_right[0]]
 
         cv2.rectangle(img, top_left, bottom_right, 255, 2)
 
