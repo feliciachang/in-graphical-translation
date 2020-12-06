@@ -24,13 +24,13 @@ function setup() {
   canvas.parent("sketch-holder");
   image_input = createFileInput(processImage);
   image_input.parent("add-file");
-  input = createInput("");
+  input = createInput("/ hello/  world");
   input.parent("text-input");
-  textHeight = createInput("100");
+  textHeight = createInput("220");
   textHeight.parent("text-height");
-  tWidth = createInput("100");
+  tWidth = createInput("120");
   tWidth.parent("text-width");
-  imageSize = createInput("10");
+  imageSize = createInput("20");
   imageSize.parent("image-size");
   button = createButton("submit");
   button.mousePressed(turnText);

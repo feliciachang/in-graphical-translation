@@ -6,8 +6,24 @@
     <script src="static/scripts/modelDepth.js" defer></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Felicia's Test App</title>
+
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=Xanh+Mono:ital@0;1&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap");
+      body {
+        margin: 10%;
+      }
+      html {
+        font-family: "Padauk", sans-serif;
+        font-size: 12pt;
+        color: #222222;
+      }
+      h1 {
+        font-family: "Xanh Mono";
+        font-size: larger;
+        color: #222222;
+      }
       form {
         margin-bottom: 5%;
       }
@@ -38,6 +54,13 @@
     </style>
   </head>
   <body>
+    <h1>Image as Type</h1>
+    <p>Choose an image to project type with!</p>
+    <p>
+      A few notes... the editor currently only supports 500px by 500px JPG
+      images. The image processing does take ~30 seconds so please be patient.
+      If things stop working, try hard refreshing.
+    </p>
     <form id="img-form" action="" enctype="multipart/form-data" method="post">
       <label for="img">Select image:</label>
       <input
