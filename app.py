@@ -152,17 +152,6 @@ def getCircles(img_uri):
                                [colindex], b_array[rowindex][colindex]])
             final.append(onerow)
 
-        # # create a mask
-        # mask = np.full((img.shape[0], img.shape[1]), 0, dtype=np.uint8)
-        # # create a circle mask,
-        # cv2.circle(mask, (r, r), r, (255, 255, 255), -1)
-        # # get only the inside pixels
-        # fg = cv2.bitwise_or(img, img, mask=mask)
-
-        # mask = cv2.bitwise_not(mask)
-        # background = np.full(img.shape, 255, dtype=np.uint8)
-        # bk = cv2.bitwise_or(background, background, mask=mask)
-        # final = cv2.bitwise_or(fg, bk)
         npImage = np.array(final)
         Image.fromarray(npImage).save("static/images/cropped/circle.png")
         return "static/images/cropped/circle.png"
@@ -345,29 +334,6 @@ def getDepth(img_uri, input_text, file_name):
                 thefile.write("v {0} {1} {2} {3} {4} {5} 1.0\n".format(
                     i, j, 385*disp_resized_np[i][flipy], round(r/255, 4), round(g/255, 4), round(b/255, 4)))
                 vectors.append([i, j, disp_resized_np[i][j]])
-
-    # for i in range(len(disp_resized_np)):
-    #     for j in range(len(disp_resized_np[i])):
-    #         idx = i*len(disp_resized_np[i]) + j
-
-    #         if(idx+len(disp_resized_np)+1 < len(vectors)):
-    #             a = vectors[idx]
-    #             b = vectors[idx+len(disp_resized_np)]
-    #             c = vectors[idx+len(disp_resized_np)+1]
-    #             diff1 = [b[0] - a[0], b[1] - a[1], b[2] - a[2]]
-    #             diff2 = [c[0] - a[0], c[1] - a[1], c[2] - a[2]]
-    #             cross = np.cross(diff1, diff2)
-    #             # triangle2
-    #             a2 = vectors[idx]
-    #             b2 = vectors[idx+len(disp_resized_np)+1]
-    #             c2 = vectors[idx+1]
-    #             diff3 = [b2[0] - a2[0], b2[1] - a2[1], b2[2] - a2[2]]
-    #             diff4 = [c2[0] - a2[0], c2[1] - a2[1], c[2] - a2[2]]
-    #             cross2 = np.cross(diff3, diff4)
-    #             thefile.write("vn {0} {1} {2}\n".format(
-    #                 round(cross[0], 4), round(cross[1], 4), round(cross[2], 4)))
-    #             thefile.write("vn {0} {1} {2}\n".format(
-    #                 round(cross2[0], 4), round(cross2[1], 4), round(cross2[2], 4)))
 
     thefile.write("usemtl Material\n")
     thefile.write("s off\n")

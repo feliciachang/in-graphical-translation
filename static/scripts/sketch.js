@@ -1,4 +1,5 @@
-// import createWord from "./createWord.js";
+//JAVASCRIPT FILE FOR IMAGE AS TYPE
+//TAKES CROPPED IMAGES AND BUILDS LETTERFORMS USING createWord.js
 let longLine;
 let input, button, text;
 let len;
@@ -13,37 +14,40 @@ let positionWithMouse;
 let circShape;
 let useCircle;
 
+//loads a set of images for use in case there is no user generated image
 function preload() {
   longLine = loadImage("static/images/cropped/cropped.jpg");
   circShape = loadImage("static/images/cropped/cropped.jpg");
 }
 
+//set canvas size and builds the editor
 function setup() {
   const canvas = createCanvas(windowWidth - 500, windowHeight);
   background(255);
   canvas.parent("sketch-holder");
+  //user chooses image
   image_input = createFileInput(processImage);
   image_input.parent("add-file");
+  //user gives text input
   input = createInput("/ hello/  world");
   input.parent("text-input");
+  //edit text height
   textHeight = createInput("220");
   textHeight.parent("text-height");
+  //edit text width
   tWidth = createInput("120");
   tWidth.parent("text-width");
+  //edit image size
   imageSize = createInput("20");
   imageSize.parent("image-size");
-  button = createButton("submit");
-  button.mousePressed(turnText);
-  button.parent("text-input");
+  //toggle use of circles
   circleButton = createButton("use circles");
   circleButton.mousePressed(setCircleTru);
   circleButton.parent("use-circle");
+  //toggle use of background
   back = createButton("Add Background");
   back.mousePressed(addBackground);
   back.parent("add-background");
-  reduceSize = createButton("Reduce Size");
-  reduceSize.mousePressed(reduceWordSize);
-  reduceSize.parent("reduce-size");
 
   background("white");
   stroke("purple");
@@ -65,6 +69,7 @@ function setCircleTru() {
   }
 }
 
+//sends input image to python's image processing function using the endpoint "/create-image" and "/create-circles"
 async function processImage(file) {
   let data = {
     test: "my test",
@@ -134,35 +139,10 @@ function toVector() {
   draw();
 }
 
-function turnText() {
-  //if (backphoto !== true) {
-  background(255);
-
-  //}
-  text = input.value();
-  text = text.toUpperCase();
-  len = text.length;
-
-  let wordHeight = parseInt(textHeight.value());
-  let wordWidth = parseInt(tWidth.value());
-
-  createGrid(len);
-  createWord(text, width, len, wordHeight, wordWidth);
-}
-
-function reduceWordSize() {
-  background(255);
-  text = input.value();
-  text = text.toUpperCase();
-  len = text.length;
-  let wordHeight = parseInt(textHeight.value());
-  let wordWidth = parseInt(tWidth.value());
-  createWord(text, width, len, wordHeight, wordWidth);
-}
-
 function draw() {
   background(255);
   push();
+  //display background image
   if (backphoto) {
     image(
       backgroundImage,
@@ -173,18 +153,16 @@ function draw() {
     );
   }
   pop();
-  //}
   text = input.value();
   text = text.toUpperCase();
   len = text.length;
 
   let wordHeight = parseInt(textHeight.value());
   let wordWidth = parseInt(tWidth.value());
-
   width = parseInt(imageSize.value());
 
-  //createGrid(len);
-
+  //create word depending on the useCircle condition
+  //all user input values are sent to createWord
   if (useCircle) {
     image(circShape, 0, 0);
     createWord(text, width, len, wordHeight, wordWidth, false);

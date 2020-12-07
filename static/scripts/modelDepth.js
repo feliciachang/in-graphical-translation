@@ -40,16 +40,10 @@ function parseOBJ(text) {
       }
       const objIndex = parseInt(objIndexStr);
       const index = objIndex + (objIndex >= 0 ? 0 : objVertexData[i].length);
-      //console.log(objIndexStr, i);
-      //console.log(...objVertexData[i][index], i, index);
       if (i === 0) {
         webglVertexData[i].push(...objVertexData[i][index]);
         webglVertexData[3].push(...objVertexData[3][index]);
-      } //else {
-      //   webglVertexData[i].push(...objVertexData[i][index]);
-      // }
-      // if this is the position index (index 0) and we parsed
-      // vertex colors then copy the vertex colors to the webgl vertex color data
+      }
     });
   }
 
@@ -71,7 +65,6 @@ function parseOBJ(text) {
     },
     f(parts) {
       const numTriangles = parts.length - 2;
-      //console.log(numTriangles);
       for (let tri = 0; tri < numTriangles; ++tri) {
         addVertex(parts[0]);
         addVertex(parts[tri + 1]);
@@ -101,7 +94,6 @@ function parseOBJ(text) {
     handler(parts, unparsedArgs);
   }
 
-  // console.log(webglVertexData);
   return {
     position: webglVertexData[0],
     color: webglVertexData[3],
@@ -129,8 +121,6 @@ function loadImageTexture(url) {
   if (!gl) {
     return;
   }
-  // gl.enable(gl.BLEND);
-  // gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
   const texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -157,27 +147,6 @@ function loadImageTexture(url) {
     // assumes this texture is a power of 2
     gl.generateMipmap(gl.TEXTURE_2D);
   });
-
-  // // create text texture.
-  // var textCanvas = makeTextCanvas(`2020`, 385, 385);
-  // var textWidth = textCanvas.width;
-  // var textHeight = textCanvas.height;
-  // var textTex = gl.createTexture();
-  // gl.bindTexture(gl.TEXTURE_2D, textTex);
-  // gl.texImage2D(
-  //   gl.TEXTURE_2D,
-  //   0,
-  //   gl.RGBA,
-  //   gl.RGBA,
-  //   gl.UNSIGNED_BYTE,
-  //   textCanvas
-  // );
-  // // make sure we can render it even if it's not a power of 2
-  // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-  // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-  // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-  // console.log(textTex);
-  // return textTex;
 
   return texture;
 }
@@ -322,8 +291,6 @@ async function main(num_of_files) {
     const data = parseOBJ(text);
     const outerElem = createElem("div", contentElem, "item");
     const viewElem = createElem("div", outerElem, "view");
-    // const labelElem = createElem("div", outerElem, "label");
-    // labelElem.textContent = `Item ${i + 1}`;
     const bufferInfo = webglUtils.createBufferInfoFromArrays(gl, data);
     items.push({
       bufferInfo: bufferInfo,
@@ -348,11 +315,8 @@ async function main(num_of_files) {
     time *= 0.001; // convert to seconds
 
     webglUtils.resizeCanvasToDisplaySize(gl.canvas);
-    //gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.CULL_FACE);
-    // gl.enable(gl.BLEND);
-    // gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.enable(gl.SCISSOR_TEST);
     gl.canvas.style.transform = `translateY(${window.scrollY}px)`;
 
@@ -396,8 +360,6 @@ async function main(num_of_files) {
       textureMatrix = m4.scale(textureMatrix, 0.5, 0.5, 0.5);
       textureMatrix = m4.multiply(textureMatrix, projection);
       textureMatrix = m4.multiply(textureMatrix, m4.inverse(camera));
-
-      //console.log(textureMatrix);
 
       const sharedUniforms = {
         u_lightDirection: m4.normalize([-1, 3, 5]),
@@ -496,58 +458,6 @@ function checkImg() {
       console.log("calling main");
 
       main(imgElement.files.length);
-      // return;
-
-      // const resolvedPromises = await Promise.all(
-      //   imgElement.files.map((imgFile, i) => {
-      //     let fileReader = new FileReader();
-      //     fileReader.onload = async function (e) {
-      //       let jsonElement = {
-      //         img: e.target.result,
-      //         text: imageText,
-      //         name: `${i}`,
-      //       };
-      //       console.log("here");
-      //       let response = await fetch(
-      //         "/create-obj-file",
-      //         {
-      //           method: "POST",
-      //           headers: {
-      //             "Content-Type": "application/json",
-      //           },
-      //           body: JSON.stringify(jsonElement),
-      //         }
-      //       );
-      //       console.log("here2");
-      //       response = await response.text();
-      //     };
-      //     fileReader.readAsDataURL(imgFile);
-      //   })
-      // );
-
-      // for (let i = 0; i < imgElement.files.length; i++) {
-      //   imgFile = imgElement.files[i];
-      //   let fileReader = new FileReader();
-      //   fileReader.onload = async function (e) {
-      //     let jsonElement = {
-      //       img: e.target.result,
-      //       text: imageText,
-      //       name: `${i}`,
-      //     };
-      //     console.log("here");
-      //     let response = await fetch("/create-obj-file", {
-      //       method: "POST",
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //       },
-      //       body: JSON.stringify(jsonElement),
-      //     });
-      //     console.log("here2");
-      //     response = await response.text();
-      //   };
-      //   console.log("finsihed");
-      //   fileReader.readAsDataURL(imgFile);
-      // }
     });
 }
 

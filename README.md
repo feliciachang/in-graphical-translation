@@ -1,7 +1,8 @@
 
-# Felicia Senior Thesis
+# In Graphical Translation
+Senior thesis for Computing and the Arts by Felicia Chang
 
-## Development
+## Running the App
 
 Install dependencies (preferably to a virtual environment)
 
@@ -15,6 +16,12 @@ Run the app
 python app.py
 ```
 
-## Production
+# Design
 
-Create an app on Heroku and link the Github repo.
+## Image as Type
+
+
+## Type as Image
+Monodepth Library Credits: https://github.com/nianticlabs/monodepth2
+
+

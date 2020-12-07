@@ -1,3 +1,6 @@
+//a series of functions that create letterforms
+
+//function that draws a horizontal line that marks the top of a letter
 function topH(x, width, height, y, letterWidth) {
   push();
   for (let i = x; i < x + letterWidth; i = i + height) {
@@ -10,6 +13,8 @@ function topH(x, width, height, y, letterWidth) {
   }
   pop();
 }
+
+//function that draws half of a horizontal line that marks the middle of a letter
 function halfMiddleH(x, width, height, y, letterWidth) {
   push();
   for (let i = Math.floor(x + letterWidth / 2); i < x + 200; i = i + height) {
@@ -23,6 +28,7 @@ function halfMiddleH(x, width, height, y, letterWidth) {
   pop();
 }
 
+//function that draws a horizontal line that marks the middle of a letter
 function middleH(x, width, height, y, letterWidth) {
   push();
   for (let i = x; i < x + letterWidth; i = i + height) {
@@ -36,6 +42,7 @@ function middleH(x, width, height, y, letterWidth) {
   pop();
 }
 
+//function that draws a horizontal line that marks the bottom of a letter
 function bottomH(x, width, height, y, letterWidth) {
   push();
   for (let i = x; i < x + letterWidth; i = i + height) {
@@ -49,12 +56,14 @@ function bottomH(x, width, height, y, letterWidth) {
   pop();
 }
 
+//function that draws a vertical line that marks the left side of a letter
 function left(x, width, height, start, end) {
   for (let i = start; i < end; i = i + height) {
     image(longLine, x, i, width, (longLine.height * width) / longLine.width);
   }
 }
 
+//function that draws a vertical line that marks the middle of a letter
 function middle(x, width, height, start, end, letterWidth) {
   for (let i = start; i < end; i = i + height) {
     image(
@@ -67,6 +76,7 @@ function middle(x, width, height, start, end, letterWidth) {
   }
 }
 
+//function that draws a diagonal line, either from left to right or right to left
 function diagonal(x, width, leftToRight, start, end, letterWidth) {
   if (leftToRight) {
     for (let i = start; i < end; i = i + width) {
@@ -87,6 +97,7 @@ function diagonal(x, width, leftToRight, start, end, letterWidth) {
   }
 }
 
+//function that draws a vertical line that marks the right side of the letter
 function right(x, width, height, start, end, letterWidth) {
   for (let i = start; i < end; i = i + height) {
     image(
@@ -99,6 +110,7 @@ function right(x, width, height, start, end, letterWidth) {
   }
 }
 
+//function that draws a circle
 function circ(x, width, height, y, letterWidth) {
   image(circShape, x + width, y, letterWidth - width, letterWidth - width);
   //   push();
@@ -119,7 +131,6 @@ function createWord(text, width, len, wordHeight, wordWidth, useCircle) {
   //height = height of image that creates the word
   //canvasTop = top of letter
   //canvasHeight = bottom of letter, can be replaced with something else
-  console.log("useCircle", useCircle);
   let letterWidth = wordWidth || Math.floor(canvasWidth / len - 30);
   let height = Math.floor((longLine.height * width) / longLine.width);
   let counter = 0;
@@ -420,9 +431,6 @@ function createWord(text, width, len, wordHeight, wordWidth, useCircle) {
         continue;
       }
       let x = Math.floor((letterWidth + 20) * counter);
-      // if (x + letterWidth > canvasWidth) {
-      //   lineHeight++;
-      // }
       let y = (wordHeight + 20) * lineHeight;
       counter++;
       switch (text[i]) {
@@ -729,5 +737,3 @@ function createWord(text, width, len, wordHeight, wordWidth, useCircle) {
     }
   }
 }
-
-// export default createWord;
