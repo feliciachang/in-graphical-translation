@@ -200,68 +200,8 @@ async function main(num_of_files, rotationspeed) {
 
   const imageTexture = loadImageTexture("/static/images/obj/test.png");
 
-  //mouse events
-  let amortization = 0.95;
-  let drag = false;
-  let oldX;
-  let dX = 0;
-
-  // canvas.addEventListener(
-  //   "mousedown",
-  //   (e) => {
-  //     console.log("mouse down");
-  //     drag = true;
-  //     (oldX = e.pageX), (oldY = e.pageY);
-  //     e.preventDefault();
-  //     return false;
-  //   },
-  //   false
-  // );
-
-  // canvas.addEventListener(
-  //   "mouseup",
-  //   (e) => {
-  //     console.log("mouseup");
-  //     drag = false;
-  //   },
-  //   false
-  // );
-
-  // canvas.addEventListener(
-  //   "mouseout",
-  //   (e) => {
-  //     console.log("mouseout");
-  //     drag = false;
-  //   },
-  //   false
-  // );
-
-  // canvas.addEventListener(
-  //   "mousemove",
-  //   (e) => {
-  //     console.log("mousemove");
-  //     if (!drag) return false;
-  //     dx = ((e.pageX - oldX) * 2 * Math.PI) / canvas.width;
-  //     THETA += dX;
-  //     oldX = e.pageX;
-  //     e.preventDefault();
-  //   },
-  //   false
-  // );
-
-  // // Because data is just named arrays like this
-  //
-  // {
-  //   position: [...],
-  //   texcoord: [...],
-  //   normal: [...],
-  // }
-  //
-  // and because those names match the attributes in our vertex
-  // shader we can pass it directly into `createBufferInfoFromArrays`
-  // from the article "less code more fun".
-
   //make elements
+  //credits to https://webglfundamentals.org/webgl/lessons/webgl-multiple-views.html for guidance on making multiple canvas views
   function createElem(type, parent, className) {
     const elem = document.createElement(type);
     parent.appendChild(elem);
