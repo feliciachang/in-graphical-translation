@@ -5,16 +5,14 @@
 // see http://paulbourke.net/dataformats/obj/
 
 function parseOBJ(text) {
-  // because indices are base 1 let's just fill in the 0th data
+  // initialize data
   const objPositions = [[0, 0, 0]];
   const objTexcoords = [[0, 0]];
   const objNormals = [[0, 0, 0]];
   const objColors = [[0, 0, 0]];
 
-  // same order as `f` indices
   const objVertexData = [objPositions, objTexcoords, objNormals, objColors];
 
-  // same order as `f` indices
   let webglVertexData = [
     [], // positions
     [], // texcoords
@@ -55,13 +53,6 @@ function parseOBJ(text) {
       } else {
         objPositions.push(parts.map(parseFloat));
       }
-    },
-    vn(parts) {
-      objNormals.push(parts.map(parseFloat));
-    },
-    vt(parts) {
-      // should check for missing v and extra w?
-      objTexcoords.push(parts.map(parseFloat));
     },
     f(parts) {
       const numTriangles = parts.length - 2;
@@ -151,7 +142,7 @@ function loadImageTexture(url) {
   return texture;
 }
 
-async function main(num_of_files) {
+async function main(num_of_files, rotationspeed) {
   console.log("main", num_of_files);
   // Get A WebGL context
   /** @type {HTMLCanvasElement} */
@@ -312,13 +303,12 @@ async function main(num_of_files) {
 
   function render(time) {
     console.log("in render");
-    time *= 0.001; // convert to seconds
+    time *= rotationspeed; // convert to seconds
 
     webglUtils.resizeCanvasToDisplaySize(gl.canvas);
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.CULL_FACE);
     gl.enable(gl.SCISSOR_TEST);
-    gl.canvas.style.transform = `translateY(${window.scrollY}px)`;
 
     for (const { bufferInfo, element } of items) {
       const rect = element.getBoundingClientRect();
@@ -382,7 +372,6 @@ async function main(num_of_files) {
       //u_world: m4.translation(0, 0, 0),
       //m4.yRotation(0.7)
       const mat = m4.multiply(camera, m4.inverse(projection));
-      //console.log(textureMatrix * u_world * a_position);
       webglUtils.setUniforms(meshProgramInfo, {
         u_world: m4.yRotation(time),
         u_diffuse: [1, 0.7, 0.5, 1],
@@ -396,6 +385,7 @@ async function main(num_of_files) {
   requestAnimationFrame(render);
 }
 
+//handle image form
 function checkImg() {
   console.log("check image is run");
   let imgFile;
@@ -457,9 +447,13 @@ function checkImg() {
       console.log("done", done);
       console.log("calling main");
 
-      main(imgElement.files.length);
+      let rotationspeed = document.getElementById("rotation-speed").value;
+      if (rotationspeed == "") {
+        rotationspeed = 0.001;
+      }
+
+      main(imgElement.files.length, rotationspeed);
     });
 }
 
 checkImg();
-//main(2);

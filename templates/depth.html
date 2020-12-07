@@ -61,6 +61,7 @@
       images. The image processing does take ~30 seconds so please be patient.
       If things stop working, try hard refreshing.
     </p>
+    <hr />
     <form id="img-form" action="" enctype="multipart/form-data" method="post">
       <label for="img">Select image:</label>
       <input
@@ -71,6 +72,11 @@
         multiple
       />
       <button id="submit-img">Submit</button>
+    </form>
+    <br />
+    <form id="rotation" action="" method="post">
+      <label for="rotation">Set Rotation Speed</label>
+      <input type="text" id="rotation-speed" placeholder="0.001" />
     </form>
     <canvas id="canvas"></canvas>
     <div id="content"></div>

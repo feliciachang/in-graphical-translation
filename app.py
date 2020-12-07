@@ -89,13 +89,12 @@ def cropCircles(img, r):
     final = cv2.bitwise_or(fg, bk)
     return final
 
+# crop circle from image
+
 
 def getCircles(img_uri):
     img = data_uri_to_cv2_img(img_uri, "cv2")
-    # img = cv2.imread("static/images/original/fractal-vegetable.jpg")
     pilImg = data_uri_to_cv2_img(img_uri, "")
-    # pilImg = Image.open(
-    # "static/images/original/fractal-vegetable.jpg", mode = "r")
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     cimg = img.copy()
@@ -112,12 +111,9 @@ def getCircles(img_uri):
         r = int(i[2])
         print(x, y, r)
         img = img[int(y-r):int(y+r), int(x-r):int(x+r)]
-        # print("img", img)
-        # print("img", img.shape)
         r_array = cropCircles(img, r)
         # crop image as square
         cimg = cimg[int(y-r):int(y+r), int(x-r):int(x+r)]
-        # sliced = [[rgb[0]] for rgb in cimg[0]]
         R = []
         for index, row in enumerate(cimg):
             singlerow = []
@@ -168,6 +164,8 @@ def data_uri_to_cv2_img(uri, type):
         img = Image.open(BytesIO(base64.b64decode(encoded_data)))
     return img
 
+# crop image as rectangle
+
 
 def getImage(img_uri, template):
     originalImg = data_uri_to_cv2_img(img_uri, "cv2")
@@ -212,6 +210,7 @@ def getImage(img_uri, template):
     # All the 6 methods for comparison in a list
     # methods = ['cv2.TM_CCOEFF', 'cv2.TM_CCOEFF_NORMED', 'cv2.TM_CCORR',
     #            'cv2.TM_CCORR_NORMED', 'cv2.TM_SQDIFF', 'cv2.TM_SQDIFF_NORMED']
+    # template matching algorithm credits to https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_imgproc/py_template_matching/py_template_matching.html
     methods = ['cv2.TM_CCOEFF']
 
     for meth in methods:
@@ -228,20 +227,18 @@ def getImage(img_uri, template):
         else:
             top_left = max_loc
         bottom_right = (top_left[0] + w, top_left[1] + h)
-        futureimg = originalImg[top_left[1]: bottom_right[1], top_left[0]: bottom_right[0]]
+        futureimg = originalImg[top_left[1]                                : bottom_right[1], top_left[0]: bottom_right[0]]
 
         cv2.rectangle(img, top_left, bottom_right, 255, 2)
 
     imageNew = Image.fromarray(futureimg)
     imageNew.save("static/images/results/cropped.jpg")
-    # buffered = BytesIO()
-    # imageNew.save(buffered, format="JPEG")
-    # img_str = base64.b64encode(buffered.getvalue())
     return "static/images/results/cropped.jpg"
 
 
 def getDepth(img_uri, input_text, file_name):
     print("starting get depth")
+    # credits to the monodepth library for code that processes 2d image to 3d: https://github.com/nianticlabs/monodepth2
     # Setting up network and loading weights
     model_name = "mono_640x192"
     download_model_if_doesnt_exist(model_name)
@@ -279,7 +276,6 @@ def getDepth(img_uri, input_text, file_name):
         outputs = depth_decoder(features)
     disp = outputs[("disp", 0)]
 
-    # Plotting
     disp_resized = torch.nn.functional.interpolate(disp,
                                                    (original_height, original_width), mode="bilinear", align_corners=False)
     print("getting input image")
@@ -287,13 +283,13 @@ def getDepth(img_uri, input_text, file_name):
     disp_resized_np = disp_resized.squeeze().cpu().numpy()
     print("create file")
     print("input image", (len(disp_resized_np[1]), len(disp_resized_np)))
+    # Creating image from input text
     im = Image.new("RGBA", (len(disp_resized_np[1]), len(disp_resized_np)))
     print("img size", im.size)
     draw = ImageDraw.Draw(im)
     text = input_text
     print("this is the input text:", input_text)
 
-    # font = ImageFont.truetype(r'C:\Users\feliciachang\Desktop\16020_FUTURAM.ttf', 20)
     text_path = "static/images/type/Montserrat-Regular.ttf"
 
     font = ImageFont.truetype(text_path, 100)
@@ -314,13 +310,12 @@ def getDepth(img_uri, input_text, file_name):
 
     vectors = []
 
+    # create OBJ file
+    # if text is found, draw text. otherwise, draw image
+
+    # start with vertices
     for i in range(len(disp_resized_np)):
         for j in range(len(disp_resized_np[i])):
-            # flipy = len(disp_resized_np) - 1 - j
-            # r, g, b = input_image.getpixel((i, flipy))
-            # thefile.write("v {0} {1} {2} {3} {4} {5} 1.0\n".format(
-            #     i, j, 385*disp_resized_np[i][flipy], round(r/255, 4), round(g/255, 4), round(b/255, 4)))
-            # vectors.append([i, j, disp_resized_np[i][j]])
             flipy = len(disp_resized_np) - 1 - j
             r, g, b = input_image.getpixel((i, flipy))
             a, b, c, d = im.getpixel((i, flipy))
@@ -340,6 +335,7 @@ def getDepth(img_uri, input_text, file_name):
 
     normal = 1
     print("writing 2 file")
+    # then create faces
     for i in range(len(disp_resized_np)):
         for j in range(len(disp_resized_np[i])):
             idx = i*len(disp_resized_np[i]) + j
