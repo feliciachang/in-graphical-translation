@@ -41,7 +41,7 @@ function middleH(x, width, height, y, letterWidth) {
     push();
     translate(i, y + width);
     rotate(-90);
-    translate(-i, -y) + width;
+    translate(-i, -y - width);
     image(
       longLine,
       i,
@@ -371,6 +371,14 @@ function createWord(
           circ(x, width, height, canvasTop + y, letterWidth);
           break;
         case "Q":
+          circ(x, width, height, canvasTop + y, letterWidth);
+          bottomH(
+            x + letterWidth / 2,
+            width,
+            height,
+            wordHeight + y,
+            letterWidth
+          );
           break;
         case "R":
           left(x, width, height, canvasTop + y, wordHeight + y);
