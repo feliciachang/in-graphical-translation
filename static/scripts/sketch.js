@@ -17,7 +17,7 @@ let useCircle;
 //loads a set of images for use in case there is no user generated image
 function preload() {
   longLine = loadImage("static/images/cropped/cropped.jpg");
-  circShape = loadImage("static/images/cropped/cropped.jpg");
+  circShape = loadImage("static/images/original/circle.jpg");
 }
 
 //set canvas size and builds the editor
@@ -29,7 +29,7 @@ function setup() {
   image_input = createFileInput(processImage);
   image_input.parent("add-file");
   //user gives text input
-  input = createInput("/ hello/  world");
+  input = createInput("/abcdefg/hijklmno/pqrstuv/wxyz");
   input.parent("text-input");
   //edit text height
   textHeight = createInput("220");
@@ -40,10 +40,13 @@ function setup() {
   //edit image size
   imageSize = createInput("20");
   imageSize.parent("image-size");
+  //edit text kerning
+  textKerning = createInput("20");
+  textKerning.parent("text-kerning");
   //toggle use of circles
-  circleButton = createButton("use circles");
+  circleButton = createButton("toggle circles");
   circleButton.mousePressed(setCircleTru);
-  circleButton.parent("use-circle");
+  circleButton.parent("toggle-circle");
   //toggle use of background
   back = createButton("Add Background");
   back.mousePressed(addBackground);
@@ -160,13 +163,13 @@ function draw() {
   let wordHeight = parseInt(textHeight.value());
   let wordWidth = parseInt(tWidth.value());
   width = parseInt(imageSize.value());
+  let kerning = parseInt(textKerning.value());
 
   //create word depending on the useCircle condition
   //all user input values are sent to createWord
   if (useCircle) {
-    image(circShape, 0, 0);
-    createWord(text, width, len, wordHeight, wordWidth, false);
+    createWord(text, width, len, wordHeight, wordWidth, kerning, false);
   } else {
-    createWord(text, width, len, wordHeight, wordWidth, true);
+    createWord(text, width, len, wordHeight, wordWidth, kerning, true);
   }
 }

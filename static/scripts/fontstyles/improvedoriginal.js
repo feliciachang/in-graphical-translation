@@ -5,16 +5,10 @@ function topH(x, width, height, y, letterWidth) {
   push();
   for (let i = x; i < x + letterWidth; i = i + height) {
     push();
-    translate(i, y + width);
+    translate(i, y);
     rotate(-90);
-    translate(-i, -y - width);
-    image(
-      longLine,
-      i,
-      y + width,
-      width,
-      (longLine.height * width) / longLine.width
-    );
+    translate(-i, -y);
+    image(longLine, i, y, width, (longLine.height * width) / longLine.width);
     pop();
   }
   pop();
@@ -39,16 +33,10 @@ function middleH(x, width, height, y, letterWidth) {
   push();
   for (let i = x; i < x + letterWidth; i = i + height) {
     push();
-    translate(i, y + width);
+    translate(i, y);
     rotate(-90);
-    translate(-i, -y) + width;
-    image(
-      longLine,
-      i,
-      y + width,
-      width,
-      (longLine.height * width) / longLine.width
-    );
+    translate(-i, -y);
+    image(longLine, i, y, width, (longLine.height * width) / longLine.width);
     pop();
   }
   pop();
@@ -88,56 +76,43 @@ function middle(x, width, height, start, end, letterWidth) {
   }
 }
 
-// diagonal(
-//   x,
-//   height,
-//   width,
-//   true,
-//   wordHeight / 2 + y,
-//   wordHeight + y,
-//   letterWidth
-// );
 //function that draws a diagonal line, either from left to right or right to left
-function diagonal(x, width, leftToRight, start, end, letterWidth) {
-  // let angle = atan(width / height);
-  // console.log(angle);
-  // console.log(longLine.height);
-  // console.log(x);
-  // let j = start;
-  // push();
-  // for (let i = x; i < x + letterWidth; i = i + height) {
-  //   push();
-  //   translate(i, j);
-  //   rotate(-angle);
-  //   translate(-i, -j);
-  //   image(
-  //     longLine,
-  //     i - 5,
-  //     j - 5,
-  //     width,
-  //     (longLine.height * width) / longLine.width
-  //   );
-  //   pop();
-  //   j += 20;
-  // }
-  // pop();
-  if (leftToRight) {
-    for (let i = start; i < end; i = i + width) {
-      image(longLine, x, i, width, (longLine.height * width) / longLine.width);
-      x += width;
-    }
-  } else {
-    for (let i = start; i < end; i = i + width) {
-      image(
-        longLine,
-        x + letterWidth,
-        i,
-        width,
-        (longLine.height * width) / longLine.width
-      );
-      x -= width;
-    }
+function diagonal(x, height, width, leftToRight, start, end, letterWidth) {
+  let angle = atan(width / height);
+
+  push();
+  for (let i = start; i < end; i = i + width) {
+    push();
+    translate(i, start);
+    rotate(-angle);
+    translate(-i, -start);
+    image(
+      longLine,
+      i,
+      start,
+      width,
+      (longLine.height * width) / longLine.width
+    );
+    pop();
   }
+  pop();
+  // if (leftToRight) {
+  //   for (let i = start; i < end; i = i + width) {
+  //     image(longLine, x, i, width, (longLine.height * width) / longLine.width);
+  //     x += width;
+  //   }
+  // } else {
+  //   for (let i = start; i < end; i = i + width) {
+  //     image(
+  //       longLine,
+  //       x + letterWidth,
+  //       i,
+  //       width,
+  //       (longLine.height * width) / longLine.width
+  //     );
+  //     x -= width;
+  //   }
+  // }
 }
 
 //function that draws a vertical line that marks the right side of the letter
@@ -202,8 +177,7 @@ function createWord(
       counter++;
       switch (text[i]) {
         case "A":
-          circ(x, width, height, canvasTop + y, letterWidth);
-          //circ(x, width, height, canvasTop + y - letterWidth, letterWidth);
+          circ(x, width, height, canvasTop + y - letterWidth, letterWidth);
           left(
             x,
             width,
@@ -228,16 +202,9 @@ function createWord(
           );
           break;
         case "B":
-          circ(x, width, height, canvasTop + y, letterWidth);
-          //circ(x, width / 2, height, canvasTop + y - letterWidth, letterWidth);
-          circ(
-            x,
-            width,
-            height,
-            wordHeight + y - letterWidth + 15,
-            letterWidth
-          );
-          left(x, width, height, canvasTop + y, wordHeight + y);
+          circ(x, width / 2, height, canvasTop + y - letterWidth, letterWidth);
+          circ(x, width / 2, height, wordHeight + y - letterWidth, letterWidth);
+          left(x, width, height, canvasTop + y - letterWidth, wordHeight + y);
           break;
         case "C":
           left(x, width, height, canvasTop + y, wordHeight + y);
