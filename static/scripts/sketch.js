@@ -13,6 +13,8 @@ let backphoto;
 let positionWithMouse;
 let circShape;
 let useCircle;
+let useItalics;
+let useAllCircles;
 
 //loads a set of images for use in case there is no user generated image
 function preload() {
@@ -30,6 +32,7 @@ function setup() {
   image_input.parent("add-file");
   //user gives text input
   input = createInput("/abcdefg/hijklmno/pqrstuv/wxyz");
+  //input = createInput("a");
   input.parent("text-input");
   //edit text height
   textHeight = createInput("220");
@@ -38,15 +41,26 @@ function setup() {
   tWidth = createInput("120");
   tWidth.parent("text-width");
   //edit image size
-  imageSize = createInput("20");
+  imageSize = createInput("10");
   imageSize.parent("image-size");
   //edit text kerning
-  textKerning = createInput("20");
+  textKerning = createInput("80");
   textKerning.parent("text-kerning");
+
+  gap = createInput("10");
+  gap.parent("gap");
+
+  allCircles = createButton("toggle all circles");
+  allCircles.mousePressed(setAllCirclesTru);
+  allCircles.parent("toggle-all-circle");
   //toggle use of circles
   circleButton = createButton("toggle circles");
   circleButton.mousePressed(setCircleTru);
   circleButton.parent("toggle-circle");
+
+  toggleItalics = createButton("toggle italics");
+  toggleItalics.mousePressed(setItalicsTru);
+  toggleItalics.parent("toggle-italics");
   //toggle use of background
   back = createButton("Add Background");
   back.mousePressed(addBackground);
@@ -69,6 +83,22 @@ function setCircleTru() {
     useCircle = false;
   } else {
     useCircle = true;
+  }
+}
+
+function setItalicsTru() {
+  if (useItalics) {
+    useItalics = false;
+  } else {
+    useItalics = true;
+  }
+}
+
+function setAllCirclesTru() {
+  if (useAllCircles) {
+    useAllCircles = false;
+  } else {
+    useAllCircles = true;
   }
 }
 
@@ -164,12 +194,81 @@ function draw() {
   let wordWidth = parseInt(tWidth.value());
   width = parseInt(imageSize.value());
   let kerning = parseInt(textKerning.value());
+  let textgap = parseInt(gap.value());
 
   //create word depending on the useCircle condition
   //all user input values are sent to createWord
-  if (useCircle) {
-    createWord(text, width, len, wordHeight, wordWidth, kerning, false);
+  if (useAllCircles) {
+    if (useCircle) {
+      createWordWithCircles(
+        text,
+        width,
+        len,
+        wordHeight,
+        wordWidth,
+        kerning,
+        textgap,
+        false
+      );
+    } else {
+      createWordWithCircles(
+        text,
+        width,
+        len,
+        wordHeight,
+        wordWidth,
+        kerning,
+        textgap,
+        true
+      );
+    }
+  } else if (useItalics) {
+    if (useCircle) {
+      createWord(
+        text,
+        width,
+        len,
+        wordHeight,
+        wordWidth,
+        kerning,
+        textgap,
+        false
+      );
+    } else {
+      createWord(
+        text,
+        width,
+        len,
+        wordHeight,
+        wordWidth,
+        kerning,
+        textgap,
+        true
+      );
+    }
   } else {
-    createWord(text, width, len, wordHeight, wordWidth, kerning, true);
+    if (useCircle) {
+      createItalics(
+        text,
+        width,
+        len,
+        wordHeight,
+        wordWidth,
+        kerning,
+        textgap,
+        false
+      );
+    } else {
+      createItalics(
+        text,
+        width,
+        len,
+        wordHeight,
+        wordWidth,
+        kerning,
+        textgap,
+        true
+      );
+    }
   }
 }

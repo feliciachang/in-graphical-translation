@@ -260,8 +260,7 @@ function createWord(
   wordWidth,
   textKerning,
   gap,
-  useCircle,
-  useAllCircles
+  useCircle
 ) {
   //x = position of the left most side of letter
   //width = width of image
