@@ -18,7 +18,7 @@ let useAllCircles;
 
 //loads a set of images for use in case there is no user generated image
 function preload() {
-  longLine = loadImage("static/images/cropped/cropped.jpg");
+  longLine = loadImage("static/images/cropped/newcropped.jpg");
   circShape = loadImage("static/images/original/circle.jpg");
 }
 
@@ -63,7 +63,7 @@ function setup() {
   toggleItalics.parent("toggle-italics");
   //toggle use of background
   back = createButton("Add Background");
-  back.mousePressed(addBackground);
+  back.mousePressed(createTheWord);
   back.parent("add-background");
 
   background("white");
@@ -76,30 +76,6 @@ function setup() {
   canvasHeight = 200;
   width = 10;
   backphoto = false;
-}
-
-function setCircleTru() {
-  if (useCircle) {
-    useCircle = false;
-  } else {
-    useCircle = true;
-  }
-}
-
-function setItalicsTru() {
-  if (useItalics) {
-    useItalics = false;
-  } else {
-    useItalics = true;
-  }
-}
-
-function setAllCirclesTru() {
-  if (useAllCircles) {
-    useAllCircles = false;
-  } else {
-    useAllCircles = true;
-  }
 }
 
 //sends input image to python's image processing function using the endpoint "/create-image" and "/create-circles"
@@ -172,20 +148,8 @@ function toVector() {
   draw();
 }
 
-function draw() {
+function createTheWord() {
   background(255);
-  push();
-  //display background image
-  if (backphoto) {
-    image(
-      backgroundImage,
-      0,
-      0,
-      canvasWidth,
-      backgroundImage.height * (canvasWidth / backgroundImage.width)
-    );
-  }
-  pop();
   text = input.value();
   text = text.toUpperCase();
   len = text.length;
@@ -195,80 +159,165 @@ function draw() {
   width = parseInt(imageSize.value());
   let kerning = parseInt(textKerning.value());
   let textgap = parseInt(gap.value());
-
-  //create word depending on the useCircle condition
-  //all user input values are sent to createWord
-  if (useAllCircles) {
-    if (useCircle) {
-      createWordWithCircles(
-        text,
-        width,
-        len,
-        wordHeight,
-        wordWidth,
-        kerning,
-        textgap,
-        false
-      );
-    } else {
-      createWordWithCircles(
-        text,
-        width,
-        len,
-        wordHeight,
-        wordWidth,
-        kerning,
-        textgap,
-        true
-      );
-    }
-  } else if (useItalics) {
-    if (useCircle) {
-      createWord(
-        text,
-        width,
-        len,
-        wordHeight,
-        wordWidth,
-        kerning,
-        textgap,
-        false
-      );
-    } else {
-      createWord(
-        text,
-        width,
-        len,
-        wordHeight,
-        wordWidth,
-        kerning,
-        textgap,
-        true
-      );
-    }
-  } else {
-    if (useCircle) {
-      createItalics(
-        text,
-        width,
-        len,
-        wordHeight,
-        wordWidth,
-        kerning,
-        textgap,
-        false
-      );
-    } else {
-      createItalics(
-        text,
-        width,
-        len,
-        wordHeight,
-        wordWidth,
-        kerning,
-        textgap,
-        true
-      );
-    }
-  }
+  console.log("creating");
+  createWord(text, width, len, wordHeight, wordWidth, kerning, textgap);
 }
+
+function setCircleTru() {
+  // if (useCircle) {
+  //   useCircle = false;
+  // } else {
+  //   useCircle = true;
+  // }
+  background(255);
+  text = input.value();
+  text = text.toUpperCase();
+  len = text.length;
+  let wordHeight = parseInt(textHeight.value());
+  let wordWidth = parseInt(tWidth.value());
+  width = parseInt(imageSize.value());
+  let kerning = parseInt(textKerning.value());
+  let textgap = parseInt(gap.value());
+  console.log("creating set circle tru");
+  createBigCircles(text, width, len, wordHeight, wordWidth, kerning, textgap);
+}
+
+function setItalicsTru() {
+  // if (useItalics) {
+  //   useItalics = false;
+  // } else {
+  //   useItalics = true;
+  // }
+  background(255);
+  text = input.value();
+  text = text.toUpperCase();
+  len = text.length;
+  let wordHeight = parseInt(textHeight.value());
+  let wordWidth = parseInt(tWidth.value());
+  width = parseInt(imageSize.value());
+  let kerning = parseInt(textKerning.value());
+  let textgap = parseInt(gap.value());
+  console.log("creating");
+  createItalics(text, width, len, wordHeight, wordWidth, kerning, textgap);
+}
+
+function setAllCirclesTru() {
+  background(255);
+  text = input.value();
+  text = text.toUpperCase();
+  len = text.length;
+
+  // if (useAllCircles) {
+  //   useAllCircles = false;
+  // } else {
+  //   useAllCircles = true;
+  // }
+  let wordHeight = parseInt(textHeight.value());
+  let wordWidth = parseInt(tWidth.value());
+  width = parseInt(imageSize.value());
+  let kerning = parseInt(textKerning.value());
+  let textgap = parseInt(gap.value());
+  console.log("creating");
+  createWordWithCircles(
+    text,
+    width,
+    len,
+    wordHeight,
+    wordWidth,
+    kerning,
+    textgap
+  );
+}
+
+// function draw() {
+//   background(255);
+//   push();
+//   //display background image
+//   if (backphoto) {
+//     image(
+//       backgroundImage,
+//       0,
+//       0,
+//       canvasWidth,
+//       backgroundImage.height * (canvasWidth / backgroundImage.width)
+//     );
+//   }
+//   pop();
+//   text = input.value();
+//   text = text.toUpperCase();
+//   len = text.length;
+
+//   let wordHeight = parseInt(textHeight.value());
+//   let wordWidth = parseInt(tWidth.value());
+//   width = parseInt(imageSize.value());
+//   let kerning = parseInt(textKerning.value());
+//   let textgap = parseInt(gap.value());
+
+//   //create word depending on the useCircle condition
+//   //all user input values are sent to createWord
+//   // useItalics = true;
+//   // if (useAllCircles) {
+//   //   if (useCircle) {
+//   //     createWordWithCircles(
+//   //       text,
+//   //       width,
+//   //       len,
+//   //       wordHeight,
+//   //       wordWidth,
+//   //       kerning,
+//   //       textgap,
+//   //       false
+//   //     );
+//   //   } else {
+//   //     createWordWithCircles(
+//   //       text,
+//   //       width,
+//   //       len,
+//   //       wordHeight,
+//   //       wordWidth,
+//   //       kerning,
+//   //       textgap,
+//   //       true
+//   //     );
+//   //   }
+//   // } else if (useItalics) {
+//   //   if (useCircle) {
+//   //     createWord(
+//   //       text,
+//   //       width,
+//   //       len,
+//   //       wordHeight,
+//   //       wordWidth,
+//   //       kerning,
+//   //       textgap,
+//   //       false
+//   //     );
+//   //   } else {
+//   createWord(text, width, len, wordHeight, wordWidth, kerning, 0);
+//   //}
+//   // } else {
+//   //   if (useCircle) {
+//   //     createItalics(
+//   //       text,
+//   //       width,
+//   //       len,
+//   //       wordHeight,
+//   //       wordWidth,
+//   //       kerning,
+//   //       textgap,
+//   //       false
+//   //     );
+//   //   } else {
+//   //     createItalics(
+//   //       text,
+//   //       width,
+//   //       len,
+//   //       wordHeight,
+//   //       wordWidth,
+//   //       kerning,
+//   //       textgap,
+//   //       true
+//   //     );
+//   //   }
+//   // }
+// }
