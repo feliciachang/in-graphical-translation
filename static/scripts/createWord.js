@@ -1,9 +1,9 @@
 //a series of functions that create letterforms
 
 //function that draws a horizontal line that marks the top of a letter
-function topH(x, width, height, y, letterWidth) {
+function topH(x, width, height, y, letterWidth, gap) {
   push();
-  for (let i = x; i < x + letterWidth; i = i + height) {
+  for (let i = x; i < x + letterWidth; i = i + height + gap) {
     push();
     translate(i, y + width);
     rotate(-90);
@@ -21,9 +21,13 @@ function topH(x, width, height, y, letterWidth) {
 }
 
 //function that draws half of a horizontal line that marks the middle of a letter
-function halfMiddleH(x, width, height, y, letterWidth) {
+function halfMiddleH(x, width, height, y, letterWidth, gap) {
   push();
-  for (let i = Math.floor(x + letterWidth / 2); i < x + 200; i = i + height) {
+  for (
+    let i = Math.floor(x + letterWidth / 2);
+    i < x + 200;
+    i = i + height + gap
+  ) {
     push();
     translate(i, y);
     rotate(-90);
@@ -35,9 +39,9 @@ function halfMiddleH(x, width, height, y, letterWidth) {
 }
 
 //function that draws a horizontal line that marks the middle of a letter
-function middleH(x, width, height, y, letterWidth) {
+function middleH(x, width, height, y, letterWidth, gap) {
   push();
-  for (let i = x; i < x + letterWidth; i = i + height) {
+  for (let i = x; i < x + letterWidth; i = i + height + gap) {
     push();
     translate(i, y + width);
     rotate(-90);
@@ -55,9 +59,9 @@ function middleH(x, width, height, y, letterWidth) {
 }
 
 //function that draws a horizontal line that marks the bottom of a letter
-function bottomH(x, width, height, y, letterWidth) {
+function bottomH(x, width, height, y, letterWidth, gap) {
   push();
-  for (let i = x; i < x + letterWidth; i = i + height) {
+  for (let i = x; i < x + letterWidth; i = i + height + gap) {
     push();
     translate(i, y);
     rotate(-90);
@@ -109,7 +113,7 @@ function middle(x, width, height, start, end, letterWidth, gap) {
 // );
 //function that draws a diagonal line, either from left to right or right to left
 
-function diagonal(x, height, width, leftToRight, start, end, letterWidth) {
+function diagonal(x, height, width, leftToRight, start, end, letterWidth, gap) {
   let x1 = x;
   let y1 = start;
   let x2 = x + letterWidth;
@@ -128,8 +132,8 @@ function diagonal(x, height, width, leftToRight, start, end, letterWidth) {
       translate(-i, -j);
       image(longLine, i, j, width, (longLine.height * width) / longLine.width);
       pop();
-      j += cos(angle) * height;
-      i += sin(angle) * height;
+      j += cos(angle) * (height + gap);
+      i += sin(angle) * (height + gap);
     }
   } else {
     let i = x2;
@@ -141,8 +145,8 @@ function diagonal(x, height, width, leftToRight, start, end, letterWidth) {
       translate(-i, -j);
       image(longLine, i, j, width, (longLine.height * width) / longLine.width);
       pop();
-      j += cos(angle) * height;
-      i -= sin(angle) * height;
+      j += cos(angle) * (height + gap);
+      i -= sin(angle) * (height + gap);
     }
   }
 }
@@ -154,7 +158,8 @@ function diagonalToCenter(
   leftToRight,
   start,
   end,
-  letterWidth
+  letterWidth,
+  gap
 ) {
   if (leftToRight) {
     let x1 = x;
@@ -169,12 +174,12 @@ function diagonalToCenter(
     while (i < x2 && j < y2) {
       push();
       translate(i, j);
-      rotate(Math.PI - angle);
+      rotate(-angle);
       translate(-i, -j);
       image(longLine, i, j, width, (longLine.height * width) / longLine.width);
       pop();
-      j += cos(angle) * height;
-      i += sin(angle) * height;
+      j += cos(angle) * (height + gap);
+      i += sin(angle) * (height + gap);
     }
   } else {
     let x1 = x + letterWidth / 2;
@@ -193,44 +198,10 @@ function diagonalToCenter(
       translate(-i, -j);
       image(longLine, i, j, width, (longLine.height * width) / longLine.width);
       pop();
-      j += cos(angle) * height;
-      i -= sin(angle) * height;
+      j += cos(angle) * (height + gap);
+      i -= sin(angle) * (height + gap);
     }
   }
-
-  // if (leftToRight) {
-  //   let angle = atan((end - start) / (letterWidth / 2));
-  //   let increment = cos(angle) * height;
-  //   let incrementHeight = sin(angle) * height;
-  //   let j = start;
-  //   push();
-  //   for (let i = x; i < x + letterWidth / 2; i = i + increment) {
-  //     push();
-  //     translate(i, j);
-  //     rotate(-angle);
-  //     translate(-i, -j);
-  //     image(longLine, i, j, width, (longLine.height * width) / longLine.width);
-  //     pop();
-  //     j += incrementHeight;
-  //   }
-  //   pop();
-  // } else {
-  //   let angle = atan((end - start) / (letterWidth / 2));
-  //   let increment = cos(angle) * height;
-  //   let incrementHeight = sin(angle) * height;
-  //   let j = start - 5;
-  //   push();
-  //   for (let i = x + letterWidth; i > x + letterWidth / 2; i = i - increment) {
-  //     push();
-  //     translate(i, j);
-  //     rotate(angle);
-  //     translate(-i, -j);
-  //     image(longLine, i, j, width, (longLine.height * width) / longLine.width);
-  //     pop();
-  //     j += incrementHeight;
-  //   }
-  //   pop();
-  // }
 }
 
 //function that draws a vertical line that marks the right side of the letter
@@ -262,7 +233,16 @@ function circ(x, width, height, y, letterWidth) {
   //   pop();
 }
 
-function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
+function createWord(
+  text,
+  width,
+  len,
+  wordHeight,
+  wordWidth,
+  textKerning,
+  gap,
+  hgap
+) {
   //x = position of the left most side of letter
   //width = width of image
   //height = height of image that creates the word
@@ -294,13 +274,14 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
           letterWidth,
           gap
         );
-        topH(x, width, height, canvasTop + y, letterWidth);
+        topH(x, width, height, canvasTop + y, letterWidth, hgap);
         middleH(
           x,
           width,
           height,
           (wordHeight - canvasTop) / 2 + y,
-          letterWidth
+          letterWidth,
+          hgap
         );
         break;
       case "B":
@@ -314,20 +295,21 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
           letterWidth,
           gap
         );
-        topH(x, width, height, canvasTop + y, letterWidth);
+        topH(x, width, height, canvasTop + y, letterWidth, hgap);
         middleH(
           x,
           width,
           height,
           (wordHeight - canvasTop) / 2 + y,
-          letterWidth
+          letterWidth,
+          hgap
         );
-        bottomH(x, width, height, wordHeight + y, letterWidth);
+        bottomH(x, width, height, wordHeight + y, letterWidth, hgap);
         break;
       case "C":
         left(x, width, height, canvasTop + y, wordHeight + y, gap);
-        topH(x, width, height, canvasTop + y, letterWidth);
-        bottomH(x, width, height, wordHeight + y, letterWidth);
+        topH(x, width, height, canvasTop + y, letterWidth + width, hgap);
+        bottomH(x, width, height, wordHeight + y, letterWidth + width, hgap);
         break;
       case "D":
         left(x, width, height, canvasTop + y, wordHeight + y, gap);
@@ -340,42 +322,45 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
           letterWidth,
           gap
         );
-        topH(x, width, height, canvasTop + y, letterWidth);
-        bottomH(x, width, height, wordHeight + y, letterWidth);
+        topH(x, width, height, canvasTop + y, letterWidth, hgap);
+        bottomH(x, width, height, wordHeight + y, letterWidth, hgap);
         break;
       case "E":
         left(x, width, height, canvasTop + y, wordHeight + y, gap);
-        topH(x, width, height, canvasTop + y, letterWidth);
+        topH(x, width, height, canvasTop + y, letterWidth + width, hgap);
         middleH(
           x,
           width,
           height,
           (wordHeight - canvasTop) / 2 + y,
-          letterWidth
+          letterWidth + width,
+          hgap
         );
-        bottomH(x, width, height, wordHeight + y, letterWidth);
+        bottomH(x, width, height, wordHeight + y, letterWidth + width, hgap);
         break;
       case "F":
         left(x, width, height, canvasTop + y, wordHeight + y, gap);
-        topH(x, width, height, canvasTop + y, letterWidth);
+        topH(x, width, height, canvasTop + y, letterWidth + width, hgap);
         middleH(
           x,
           width,
           height,
           (wordHeight - canvasTop) / 2 + y,
-          letterWidth
+          letterWidth + width,
+          hgap
         );
         break;
       case "G":
         left(x, width, height, canvasTop + y, wordHeight + y, gap);
-        topH(x, width, height, canvasTop + y, letterWidth);
-        bottomH(x, width, height, wordHeight + y, letterWidth);
+        topH(x, width, height, canvasTop + y, letterWidth + width, hgap);
+        bottomH(x, width, height, wordHeight + y, letterWidth, hgap);
         halfMiddleH(
           x,
           width,
           height,
           (wordHeight - canvasTop) / 2 + y,
-          letterWidth
+          letterWidth,
+          hgap
         );
         right(
           x,
@@ -403,7 +388,8 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
           width,
           height,
           (wordHeight - canvasTop) / 2 + y,
-          letterWidth
+          letterWidth,
+          hgap
         );
         break;
       case "I":
@@ -416,11 +402,11 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
           letterWidth / 2,
           gap
         );
-        topH(x, width, height, canvasTop + y, letterWidth);
-        bottomH(x, width, height, wordHeight + y, letterWidth);
+        topH(x, width, height, canvasTop + y, letterWidth + width, hgap);
+        bottomH(x, width, height, wordHeight + y, letterWidth + width, hgap);
         break;
       case "J":
-        topH(x, width, height, canvasTop + y, letterWidth);
+        topH(x, width, height, canvasTop + y, letterWidth + width, hgap);
         right(
           x,
           width,
@@ -430,20 +416,47 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
           letterWidth,
           gap
         );
-        bottomH(x, width, height, wordHeight + y, letterWidth);
+        bottomH(x, width, height, wordHeight + y, letterWidth, hgap);
         left(x, width, height, wordHeight / 2 + y, wordHeight + y, gap);
         break;
       case "K":
         left(x, width, height, canvasTop + y, wordHeight + y, gap);
-        diagonal(
+        middleH(
           x,
-          height,
           width,
-          true,
+          height,
+          (wordHeight - canvasTop) / 2 + y,
+          letterWidth,
+          hgap
+        );
+        // right(
+        //   x,
+        //   width,
+        //   height,
+        //   canvasTop + y,
+        //   wordHeight / 2 + y,
+        //   letterWidth / 2,
+        //   gap
+        // );
+        right(
+          x,
+          width,
+          height,
           wordHeight / 2 + y,
           wordHeight + y,
-          letterWidth
+          letterWidth,
+          gap
         );
+        // diagonal(
+        //   x,
+        //   height,
+        //   width,
+        //   true,
+        //   wordHeight / 2 + y,
+        //   wordHeight + y,
+        //   letterWidth,
+        //   hgap
+        // );
         diagonal(
           x,
           height,
@@ -451,12 +464,13 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
           false,
           canvasTop + y,
           wordHeight / 2 + y,
-          letterWidth
+          letterWidth,
+          hgap
         );
         break;
       case "L":
         left(x, width, height, canvasTop + y, wordHeight + y, gap);
-        bottomH(x, width, height, wordHeight + y, letterWidth);
+        bottomH(x, width, height, wordHeight + y, letterWidth + width, hgap);
         break;
       case "M":
         left(x, width, height, canvasTop + y, wordHeight + y, gap);
@@ -478,7 +492,7 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
           letterWidth,
           gap
         );
-        topH(x, width, height, canvasTop + y, letterWidth);
+        topH(x, width, height, canvasTop + y, letterWidth, hgap);
         break;
       case "N":
         left(x, width, height, canvasTop + y, wordHeight + y, gap);
@@ -489,7 +503,8 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
           true,
           canvasTop + y,
           wordHeight + y,
-          letterWidth
+          letterWidth,
+          hgap
         );
         right(
           x,
@@ -512,21 +527,21 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
           letterWidth,
           gap
         );
-        topH(x, width, height, canvasTop + y, letterWidth);
-        bottomH(x, width, height, wordHeight + y, letterWidth);
+        topH(x, width, height, canvasTop + y, letterWidth, hgap);
+        bottomH(x, width, height, wordHeight + y, letterWidth, hgap);
         diagonal(
-          x,
+          x + letterWidth / 2,
           height,
           width,
-          false,
-          canvasTop + y,
+          true,
+          wordHeight / 2 + y,
           wordHeight + y,
           letterWidth
         );
         break;
       case "P":
         left(x, width, height, canvasTop + y, wordHeight + y, gap);
-        topH(x, width, height, canvasTop + y, letterWidth);
+        topH(x, width, height, canvasTop + y, letterWidth, hgap);
         right(
           x,
           width,
@@ -541,7 +556,8 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
           width,
           height,
           (wordHeight - canvasTop) / 2 + y,
-          letterWidth
+          letterWidth,
+          hgap
         );
         break;
       case "Q":
@@ -555,8 +571,8 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
           letterWidth,
           gap
         );
-        topH(x, width, height, canvasTop + y, letterWidth);
-        bottomH(x, width, height, wordHeight + y, letterWidth);
+        topH(x, width, height, canvasTop + y, letterWidth, hgap);
+        bottomH(x, width, height, wordHeight + y, letterWidth, hgap);
         diagonal(
           x + letterWidth / 2,
           height,
@@ -564,18 +580,20 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
           true,
           wordHeight / 2 + y,
           wordHeight + y,
-          letterWidth
+          letterWidth,
+          hgap
         );
         break;
       case "R":
         left(x, width, height, canvasTop + y, wordHeight + y, gap);
-        topH(x, width, height, canvasTop + y, letterWidth);
+        topH(x, width, height, canvasTop + y, letterWidth, hgap);
         middleH(
           x,
           width,
           height,
           (wordHeight - canvasTop) / 2 + y,
-          letterWidth
+          letterWidth,
+          hgap
         );
         right(
           x,
@@ -593,20 +611,22 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
           true,
           wordHeight / 2 + y,
           wordHeight + y,
-          letterWidth
+          letterWidth,
+          hgap
         );
         break;
       case "S":
         left(x, width, height, canvasTop + y, wordHeight / 2 + y, gap);
-        topH(x, width, height, canvasTop + y, letterWidth);
+        topH(x, width, height, canvasTop + y, letterWidth + width, hgap);
         middleH(
           x,
           width,
           height,
           (wordHeight - canvasTop) / 2 + y,
-          letterWidth
+          letterWidth,
+          hgap
         );
-        bottomH(x, width, height, wordHeight + y, letterWidth);
+        bottomH(x, width, height, wordHeight + y, letterWidth, hgap);
         right(
           x,
           width,
@@ -618,7 +638,7 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
         );
         break;
       case "T":
-        topH(x, width, height, canvasTop + y, letterWidth);
+        topH(x, width, height, canvasTop + y, letterWidth + width, hgap);
         middle(
           x,
           width,
@@ -631,7 +651,7 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
         break;
       case "U":
         left(x, width, height, canvasTop + y, wordHeight + y, gap);
-        bottomH(x, width, height, wordHeight + y, letterWidth);
+        bottomH(x, width, height, wordHeight + y, letterWidth, hgap);
         right(
           x,
           width,
@@ -650,7 +670,8 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
           true,
           canvasTop + y,
           wordHeight + y,
-          letterWidth
+          letterWidth,
+          hgap
         );
         diagonalToCenter(
           x,
@@ -659,7 +680,8 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
           false,
           canvasTop + y,
           wordHeight + y,
-          letterWidth
+          letterWidth,
+          hgap
         );
         break;
       case "W":
@@ -682,7 +704,7 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
           letterWidth,
           gap
         );
-        bottomH(x, width, height, wordHeight + y, letterWidth);
+        bottomH(x, width, height, wordHeight + y, letterWidth, hgap);
         break;
       case "X":
         diagonal(
@@ -692,7 +714,8 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
           true,
           canvasTop + y,
           wordHeight + y,
-          letterWidth
+          letterWidth,
+          hgap
         );
         diagonal(
           x,
@@ -701,7 +724,8 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
           false,
           canvasTop + y,
           wordHeight + y,
-          letterWidth
+          letterWidth,
+          hgap
         );
         break;
       case "Y":
@@ -712,7 +736,8 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
           true,
           canvasTop + y,
           wordHeight / 2 + y,
-          letterWidth
+          letterWidth,
+          hgap
         );
         diagonalToCenter(
           x,
@@ -721,7 +746,8 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
           false,
           canvasTop + y,
           wordHeight / 2 + y,
-          letterWidth
+          letterWidth,
+          hgap
         );
         middle(
           x,
@@ -734,17 +760,18 @@ function createWord(text, width, len, wordHeight, wordWidth, textKerning, gap) {
         );
         break;
       case "Z":
-        topH(x, width, height, canvasTop + y, letterWidth);
+        topH(x, width, height, canvasTop + y, letterWidth, hgap);
         diagonal(
           x,
           height,
           width,
           false,
           canvasTop + y,
-          wordHeight + y,
-          letterWidth
+          wordHeight + y - 5,
+          letterWidth,
+          hgap
         );
-        bottomH(x, width, height, wordHeight + y, letterWidth);
+        bottomH(x, width, height, wordHeight + y, letterWidth + width, hgap);
         break;
     }
   }

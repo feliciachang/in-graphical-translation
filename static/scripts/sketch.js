@@ -50,6 +50,9 @@ function setup() {
   gap = createInput("10");
   gap.parent("gap");
 
+  hgap = createInput("10");
+  hgap.parent("hgap");
+
   allCircles = createButton("toggle all circles");
   allCircles.mousePressed(setAllCirclesTru);
   allCircles.parent("toggle-all-circle");
@@ -159,8 +162,18 @@ function createTheWord() {
   width = parseInt(imageSize.value());
   let kerning = parseInt(textKerning.value());
   let textgap = parseInt(gap.value());
+  let htextgap = parseInt(hgap.value());
   console.log("creating");
-  createWord(text, width, len, wordHeight, wordWidth, kerning, textgap);
+  createWord(
+    text,
+    width,
+    len,
+    wordHeight,
+    wordWidth,
+    kerning,
+    textgap,
+    htextgap
+  );
 }
 
 function setCircleTru() {
